@@ -1,9 +1,8 @@
 import { Canvas } from "@react-three/fiber";
-import { Stats, OrbitControls } from '@react-three/drei';
+import { Stats, OrbitControls, Environment } from '@react-three/drei';
 
 import './space.css'
 import Planet from "../../components/planet";
-import { plane } from "three/examples/jsm/Addons.js";
 
 export default function Space() {
     const Planets = {
@@ -75,10 +74,12 @@ export default function Space() {
 
     return (
         <div className="space">
-            <Canvas>
-                <ambientLight intensity={1}/>
-                { Object.entries(Planets).map(([name,planet])=><Planet name={name} size={planet.size} distance={planet.distance}/>) }
-                <OrbitControls/>
+            <Canvas camera={{ near: 0.1, far: 10000, position: [600,0,0], fov: 30 }}>
+                <Environment background files="../../../public/space_spheremap_8k.jpg"/>
+                <ambientLight intensity={2}/>
+                <Planet name="sun" size={100} distance={0}/>
+                { Object.entries(Planets).map(([name,planet])=><Planet name={name} size={planet.size} distance={planet.distance + 20}/>) }
+                <OrbitControls zoomSpeed={0.1} rotateSpeed={0.3}/>
                 <Stats/>
             </Canvas>
         </div>
