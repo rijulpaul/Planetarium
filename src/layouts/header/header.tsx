@@ -1,9 +1,27 @@
 import './header.css'
+import { useState, useEffect } from 'react'
 
 export default function Header() {
+    const [currentTime, setCurrentTime] = useState(new Date())
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date())
+        }, 1000) // Update every second
+
+        return () => clearInterval(timer)
+    }, [])
+
     return <header className='header'>
         <button>Button 1</button>
-        <span>Planetarium</span>
+        <div className="header-content">
+            <span>Planetarium</span>
+            <div className="real-time-indicator">
+                <span className="live-dot"></span>
+                <span>Real-time Positions</span>
+                <span className="current-time">{currentTime.toLocaleTimeString()}</span>
+            </div>
+        </div>
         <button>Button 2</button>
     </header>
 }

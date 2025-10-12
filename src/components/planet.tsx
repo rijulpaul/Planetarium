@@ -1,6 +1,8 @@
 import { useFrame, useLoader } from "@react-three/fiber"
 import { useRef } from "react"
 import { TextureLoader } from "three"
+import PlanetPath from "../utils/PlanetPath"
+import presets from "../utils/presets"
 
 export default function Planet({name,props}) {
     const texture = useLoader(TextureLoader,`/textures/${name.toLowerCase()}.jpg`)
@@ -25,9 +27,12 @@ export default function Planet({name,props}) {
     }) 
 
     return (
+    <>
     <mesh ref={meshRef} scale={[props.size*0.01]*3} position={[props.distance*0.00005,0,0]}>
         <sphereGeometry args={[1,16,16]}/>
         <meshStandardMaterial map={texture}/>
     </mesh>
+        { presets.showPlanetPath && <PlanetPath radius={props.distance*0.00005} width={0.5} color="lightgray"/> }
+    </>
     )
 }
