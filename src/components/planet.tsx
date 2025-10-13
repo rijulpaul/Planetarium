@@ -3,6 +3,8 @@ import { useRef } from "react"
 import { TextureLoader } from "three"
 import PlanetPath from "../utils/PlanetPath"
 import presets from "../utils/presets"
+import getPositions from "../utils/planet-position"
+import getRotations from "../utils/planet-rotation"
 
 export default function Planet({name,props}) {
     const texture = useLoader(TextureLoader,`/textures/${name.toLowerCase()}.jpg`)

@@ -11,24 +11,26 @@ const rotationData = {
 
 // Compute rotation angle in degrees at current time
 function rotationAngle(planet, daysSinceJ2000) {
-  const period = planet.period;
+  const period = rotationData[planet].period;
   const rotationPeriodDays = period / 24; // convert hours to days
   const angle = (360 * (daysSinceJ2000 / rotationPeriodDays)) % 360;
   return angle;
 }
 
-function getRotations() {
+function getRotations(planet) {
     const J2000 = new Date('2000-01-01T12:00:00Z');
     const now = new Date();
     const daysSinceJ2000 = (now - J2000) / (1000 * 60 * 60 * 24);
 
-    const rotations = {}
+    let rotation;
 
-    for (const [name, planet] of Object.entries(rotationData)) {
-        rotations[name] = rotationAngle(planet, daysSinceJ2000);
+    try {
+        rotation = rotationAngle(planet,daysSinceJ2000)
+    } catch (e) {
+        throw Error(`Invalid planet name "${planet}"`)
     }
 
-    return rotations;
+    return rotation;
 }
 
 export default getRotations;

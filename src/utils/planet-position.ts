@@ -23,7 +23,7 @@ function kepler(M, e) {
 
 // Compute heliocentric position in AU
 function heliocentric(planet, daysSinceJ2000) {
-  const { a, e, i, Ω, ω, M0 } = planet;
+  const { a, e, i, Ω, ω, M0 } = planets[planet];
 
   const n = 360 / (a**1.5 * 365.25); // mean motion in deg/day (simplified)
   const M = M0 + n * daysSinceJ2000; // mean anomaly
@@ -44,18 +44,22 @@ function heliocentric(planet, daysSinceJ2000) {
   return { x, y, z };
 }
 
-function getPositions() {
+function getPositions(planet) {
     // Compute days since J2000
     const J2000 = new Date('2000-01-01T12:00:00Z');
     const now = new Date();
     const daysSinceJ2000 = (now - J2000) / (1000 * 60 * 60 * 24);
 
     // Compute all planet positions
-    const positions = {};
-    for (const [name, planet] of Object.entries(planets)) {
-        positions[name] = heliocentric(planet, daysSinceJ2000);
+    let position;
+
+    try {
+        position = heliocentric(planet,daysSinceJ2000);
+    } catch (e) {
+        throw Error(`Invalid planet name "${planet}"`)
     }
-    return positions;
+
+    return position;
 }
 
 export default getPositions;

@@ -1,10 +1,9 @@
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Stats, OrbitControls, Environment } from '@react-three/drei';
 import Planets from "../../utils/planet-data";
 
 import './space.css'
 import Planet from "../../components/planet";
-import { useEffect } from "react";
 
 export default function Space() {
 

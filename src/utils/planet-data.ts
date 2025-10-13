@@ -1,6 +1,6 @@
 const Planets = {
     Sun: {
-        size: 13910,
+        size: 1391400,
         distance: 0,
         mesh: null,
         path: { mesh: null, gmtry: null, curve: null },
