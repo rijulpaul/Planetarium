@@ -19,39 +19,10 @@
     gap: 0.5rem;
 }
 
-.real-time-indicator {
+.time-indicator {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1rem;
-    color: #4CAF50;
-    font-weight: 500;
-}
-
-.live-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #4CAF50;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.5;
-        transform: scale(1.2);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.current-time {
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
     color: #666;

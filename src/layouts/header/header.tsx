@@ -16,10 +16,8 @@ export default function Header() {
         <button>Button 1</button>
         <div className="header-content">
             <span>Planetarium</span>
-            <div className="real-time-indicator">
-                <span className="live-dot"></span>
-                <span>Real-time Positions</span>
-                <span className="current-time">{currentTime.toLocaleTimeString()}</span>
+            <div className="time-indicator">
+                <span>{currentTime.toLocaleString().replaceAll('/','-').replace(',',' |')}</span>
             </div>
         </div>
         <button>Button 2</button>

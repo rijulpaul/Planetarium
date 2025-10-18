@@ -1,40 +1,57 @@
-import { useFrame, useLoader } from "@react-three/fiber"
+import { useFrame, useLoader, useThree } from "@react-three/fiber"
 import { useRef } from "react"
 import { TextureLoader } from "three"
 import PlanetPath from "../utils/PlanetPath"
 import presets from "../utils/presets"
 import getPositions from "../utils/planet-position"
 import getRotations from "../utils/planet-rotation"
+import { Text, Billboard } from "@react-three/drei"
 
-export default function Planet({name,props}) {
+export default function Planet({name,data}) {
     const texture = useLoader(TextureLoader,`/textures/${name.toLowerCase()}.jpg`)
-    const meshRef = useRef<THREE.Mesh>(null!)
-    const angleRef = useRef<number>(0)
+    const meshRef = useRef(null!)
+    const camera = useThree((state)=>state.camera)
 
-    useFrame((_, delta) => {
-        // rotation
-        if (props.rotation != 0) {
-            const rotationSpeed = (2 * Math.PI) / (props.rotation * 3600);
-            meshRef.current.rotation.y += rotationSpeed * delta * 1000;
-        } 
+    function dist(camera, meshRef) {
+        console.log(camera.position.distanceTo(meshRef.current.position));
+    }
 
-        // revolution
-        if (props.orbitalVel != 0) {
-            const omega = props.orbitalVel / props.distance * 0.00005;
-            angleRef.current += omega * delta * (1/(0.00005*0.00005));
-            const x = Math.cos(angleRef.current) * props.distance * 0.00005;
-            const z = Math.sin(angleRef.current) * props.distance * 0.00005;
-            meshRef.current.position.set(x,0,z)
-        }
-    }) 
+    useFrame(() => {
+        const rotation = getRotations(name)
+        const position = getPositions(name)
+        // const sunSize = planetData.sun.size;
+        const sunSize = 10
+
+        if (position.x > 0) position.x += sunSize;
+        else if (position.x < 0) position.x -= sunSize;
+
+        if (position.y > 0) position.y += sunSize;
+        else if (position.y < 0) position.y -= sunSize;
+
+        meshRef.current.rotation.y = rotation;
+        meshRef.current.position.set(position.x*14960,position.z*14960,position.y*14960)
+    })
+
+    const ref = useRef()
+
+    useFrame(() => {
+        const dist = ref.current.position.distanceTo(camera.position)
+    // adjust scale based on distance
+        ref.current.scale.setScalar(dist * 0.001) // tweak factor
+    })
 
     return (
     <>
-    <mesh ref={meshRef} scale={[props.size*0.01]*3} position={[props.distance*0.00005,0,0]}>
+    <group onClick={()=>dist(camera,meshRef)}>
+    <mesh ref={meshRef} scale={[data.size*0.01]*3} position={[data.distance*0.00005,0,0]}>
         <sphereGeometry args={[1,16,16]}/>
-        <meshStandardMaterial map={texture}/>
+        <meshToonMaterial map={texture}/>
     </mesh>
-        { presets.showPlanetPath && <PlanetPath radius={props.distance*0.00005} width={0.5} color="lightgray"/> }
+    <Billboard ref={ref} position={meshRef.current.position} static={true} scale={10000}>
+        <Text color={"white"} fontSize={10} >{name}</Text>
+    </Billboard>
+    { presets.showPlanetPath && <PlanetPath radius={data.distance/14900} width={0.5} color="lightgray"/> }
+    </group>
     </>
     )
 }

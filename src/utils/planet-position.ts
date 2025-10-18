@@ -1,5 +1,5 @@
 // Orbital elements for planets (simplified, epoch J2000)
-const planets = {
+const positionData = {
   mercury: { a: 0.387, e: 0.206, i: 7.0, Ω: 48.3, ω: 29.1, M0: 174.8 },
   venus:   { a: 0.723, e: 0.007, i: 3.4, Ω: 76.7, ω: 54.9, M0: 50.4 },
   earth:   { a: 1.000, e: 0.017, i: 0.0, Ω: 0.0, ω: 102.9, M0: 357.5 },
@@ -23,7 +23,14 @@ function kepler(M, e) {
 
 // Compute heliocentric position in AU
 function heliocentric(planet, daysSinceJ2000) {
-  const { a, e, i, Ω, ω, M0 } = planets[planet];
+  if (!positionData[planet]) {
+    // console.log(
+    //   `No entry for ${planet} in positionData planet-positions.ts\nfalling back to 0.`,
+    // );
+    return { x:0, y:0, z:0 };
+  }
+
+  const { a, e, i, Ω, ω, M0 } = positionData[planet];
 
   const n = 360 / (a**1.5 * 365.25); // mean motion in deg/day (simplified)
   const M = M0 + n * daysSinceJ2000; // mean anomaly
@@ -51,13 +58,7 @@ function getPositions(planet) {
     const daysSinceJ2000 = (now - J2000) / (1000 * 60 * 60 * 24);
 
     // Compute all planet positions
-    let position;
-
-    try {
-        position = heliocentric(planet,daysSinceJ2000);
-    } catch (e) {
-        throw Error(`Invalid planet name "${planet}"`)
-    }
+    const position = heliocentric(planet.toLowerCase(),daysSinceJ2000);
 
     return position;
 }

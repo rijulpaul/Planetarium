@@ -1,76 +1,59 @@
-const Planets = {
-    Sun: {
+const planetData = {
+    sun: {
         size: 1391400,
         distance: 0,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
         rotation: 0,
         orbitalVel: 0,
     },
-    Mercury: {
+    mercury: {
         size: 4879,
         distance: 57900000,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: 1407.6,
+        rotation: { period: 1407.5, tilt: 0.03 },
         orbitalVel: 47.9,
     },
-    Venus: {
+    venus: {
         size: 12104,
         distance: 108200000,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: -5832.5,
+        rotation: { period: -5832.5, tilt: 177.4 },
         orbitalVel: 35,
     },
-    Earth: {
+    earth: {
         size: 12742,
         distance: 149600000,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: 23.9,
+        rotation: { period: 23.9345, tilt: 23.44 },
         orbitalVel: 29.78,
     },
-    Mars: {
+    mars: {
         size: 6779,
         distance: 227940000,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: 24.6,
+        rotation: { period: 24.6229, tilt: 25.19 },
         orbitalVel: 24.07,
     },
-    Jupiter: {
+    jupiter: {
         size: 139820,
         distance: 778330000,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: 9.925,
+        rotation: { period: 9.925, tilt: 3.13 },
         orbitalVel: 13.07,
     },
-    Saturn: {
+    saturn: {
         size: 116460,
         distance: 1429400000,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: 10.656,
+        rotation: { period: 10.656, tilt: 26.73 },
         orbitalVel: 9.69,
     },
-    Uranus: {
+    uranus: {
         size: 50724,
         distance: 2870990000,
         mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: -17.24,
+        rotation: { period: -17.24, tilt: 97.77 },
         orbitalVel: 6.8,
     },
-    Neptune: {
+    neptune: {
         size: 49244,
         distance: 4495100000,
-        mesh: null,
-        path: { mesh: null, gmtry: null, curve: null },
-        rotation: 16.11,
+        rotation: { period: 16.11, tilt: 28.32 },
         orbitalVel: 5.43,
     },
 };
 
- export default Planets;
+ export default planetData;

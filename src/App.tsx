@@ -7,9 +7,9 @@ import Space from './layouts/space/space';
 function App() {
   return (
     <>
-            <Header></Header>
-            <Space></Space>
-            <Footer></Footer>
+      <Header></Header>
+      <Space></Space>
+      <Footer></Footer>
     </>
   )
 }
