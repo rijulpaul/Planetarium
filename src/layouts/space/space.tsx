@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { Stats, OrbitControls, Environment } from '@react-three/drei';
+import { Stats, OrbitControls, Environment, GizmoHelper, GizmoViewport } from '@react-three/drei';
 import planetData from "../../utils/planet-data";
 import { PerspectiveCamera } from "@react-three/drei";
 
@@ -23,6 +23,9 @@ export default function Space() {
                 { Object.entries(planetData).map(([name,data])=><Planet name={name} data={data} />) }
                 <OrbitControls zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={2} dampingFactor={0.035}/>
                 <Stats/>
+                <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
+                    <GizmoViewport axisColors={['#550020', '#204500', '#002b55']} labelColor="white" />
+                </GizmoHelper>
             </Canvas>
         </div>
     )
