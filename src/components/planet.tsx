@@ -1,29 +1,39 @@
 import { useFrame, useLoader, useThree } from "@react-three/fiber"
 import { useRef } from "react"
-import { TextureLoader } from "three"
-import PlanetPath from "../utils/PlanetPath"
+import { DoubleSide, RepeatWrapping, TextureLoader } from "three"
 import presets from "../utils/presets"
+import planetData from "../utils/planet-data"
 import getPositions from "../utils/planet-position"
 import getRotations from "../utils/planet-rotation"
 import { Text, Billboard } from "@react-three/drei"
 
 export default function Planet({ name, data }) {
-  const texture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
-  const meshRef = useRef(null)
-  const billboardRef = useRef(null)
-  const camera = useThree((state) => state.camera)
+  const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
 
-  function dist() {
-    if (!meshRef.current) return
-    console.log(camera.position.distanceTo(meshRef.current.position))
+  let ringTexture = null
+
+  if (planetData[name].ring) {
+    ringTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}ringcolor.jpg`)
+    ringTexture.wrapS = ringTexture.wrapT = RepeatWrapping
+    ringTexture.repeat.set(8, 1) // repeat around 8 sectors
+  }
+
+  const groupRef = useRef(null)
+  const billboardRef = useRef(null)
+
+  const camera = useThree((state) => state.camera)
+  const sunSize = planetData.sun.size; 
+
+  function printPosition() {
+    if (!groupRef.current) return
+    console.log(camera.position.distanceTo(groupRef.current.position))
   }
 
   useFrame(() => {
-    if (!meshRef.current || !billboardRef.current) return
+    if (!groupRef.current || !billboardRef.current) return
 
     const rotation = getRotations(name)
     const position = getPositions(name)
-    const sunSize = 10
 
     if (position.x > 0) position.x += sunSize
     else if (position.x < 0) position.x -= sunSize
@@ -31,38 +41,35 @@ export default function Planet({ name, data }) {
     if (position.y > 0) position.y += sunSize
     else if (position.y < 0) position.y -= sunSize
 
-    meshRef.current.rotation.y = rotation
-    meshRef.current.position.set(
-      position.x * 14960,
-      position.z * 14960,
-      position.y * 14960
+    groupRef.current.rotation.y = rotation
+    groupRef.current.position.set(
+      position.x * 0.0005,
+      position.z * 0.0005,
+      position.y * 0.0005
     )
 
-    // match billboard to planet
-    billboardRef.current.position.copy(meshRef.current.position)
-
+    // Billboard text scale
     const dist = billboardRef.current.position.distanceTo(camera.position)
-    billboardRef.current.scale.setScalar(dist * 0.001)
+    billboardRef.current.scale.setScalar(dist * 0.002)
   })
 
   return (
-    <group onClick={dist}>
-      <mesh
-        ref={meshRef}
-        scale={[data.size * 0.01, data.size * 0.01, data.size * 0.01]}
-        position={[data.distance * 0.00005, 0, 0]}
-      >
+    <group onClick={printPosition} ref={groupRef}>
+      <mesh scale={[data.size * 0.01, data.size * 0.01, data.size * 0.01]}>
         <sphereGeometry args={[1, 16, 16]} />
-        <meshToonMaterial map={texture} />
+        <meshToonMaterial map={planetTexture} />
       </mesh>
 
-      <Billboard ref={billboardRef} static={false}>
-        <Text color="white" fontSize={10}>*</Text>
-      </Billboard>
+      { data.ring && 
+        <mesh>
+          <ringGeometry args={[data.ring.inner,data.ring.outer,64]} />
+          <meshToonMaterial map={ringTexture} side={DoubleSide}/>
+        </mesh>      
+      }
 
-      {presets.showPlanetPath && (
-        <PlanetPath radius={data.distance / 14900} width={0.5} color="lightgray" />
-      )}
+      <Billboard ref={billboardRef} static={false}>
+        <Text color="white" fontSize={10}>-</Text>
+      </Billboard>
     </group>
   )
 }

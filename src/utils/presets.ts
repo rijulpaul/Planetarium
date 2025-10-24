@@ -1,14 +1,10 @@
-// things to scale 
-// Time elapsed
-// Planet Distance
-// Planet Revolution
-// Planet Scale
-// Planet Rotation
-//
-// Show tracejtory
-
 const presets = {
-    showPlanetPath: false,
+    showPlanetPath: true,
+    rotationScale: 1,
+    revolutionScale: 1,
+    distanceScale: 1,
+    sizeScale: 1,
+    timeScale: 1,
 }
 
 export default presets;

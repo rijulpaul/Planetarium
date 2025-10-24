@@ -13,13 +13,11 @@ export default function Header() {
     }, [])
 
     return <header className='header'>
-        <button>Button 1</button>
         <div className="header-content">
             <span>Planetarium</span>
             <div className="time-indicator">
                 <span>{currentTime.toLocaleString().replaceAll('/','-').replace(',',' |')}</span>
             </div>
         </div>
-        <button>Button 2</button>
     </header>
 }
