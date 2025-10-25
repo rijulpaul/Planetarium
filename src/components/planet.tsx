@@ -1,3 +1,4 @@
+import RingSectorUVs from "./TriUVRing"
 import { useFrame, useLoader, useThree } from "@react-three/fiber"
 import { useRef } from "react"
 import { DoubleSide, RepeatWrapping, TextureLoader } from "three"
@@ -10,19 +11,13 @@ import { Text, Billboard } from "@react-three/drei"
 export default function Planet({ name, data }) {
   const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
 
-  let ringTexture = null
-
-  if (planetData[name].ring) {
-    ringTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}ringcolor.jpg`)
-    ringTexture.wrapS = ringTexture.wrapT = RepeatWrapping
-    ringTexture.repeat.set(8, 1) // repeat around 8 sectors
-  }
+  const ringTexture = planetData[name].ring && useLoader(TextureLoader, `/textures/${name.toLowerCase()}ringcolor.jpg`)
 
   const groupRef = useRef(null)
   const billboardRef = useRef(null)
 
   const camera = useThree((state) => state.camera)
-  const sunSize = planetData.sun.size; 
+  const sunSize = planetData.sun.size;
 
   function printPosition() {
     if (!groupRef.current) return
@@ -60,11 +55,17 @@ export default function Planet({ name, data }) {
         <meshToonMaterial map={planetTexture} />
       </mesh>
 
-      { data.ring && 
-        <mesh>
-          <ringGeometry args={[data.ring.inner,data.ring.outer,64]} />
-          <meshToonMaterial map={ringTexture} side={DoubleSide}/>
-        </mesh>      
+      { data.ring &&
+          <RingSectorUVs
+  innerRadius={data.ring.inner}
+  outerRadius={data.ring.outer}
+  segments={12}
+  materialProps={{
+    map: ringTexture,        // if you want a texture
+    metalness: 0,
+    roughness: 0.5,
+  }}
+  />
       }
 
       <Billboard ref={billboardRef} static={false}>
@@ -73,4 +74,3 @@ export default function Planet({ name, data }) {
     </group>
   )
 }
-
