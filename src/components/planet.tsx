@@ -1,23 +1,22 @@
 import RingSectorUVs from "./TriUVRing"
 import { useFrame, useLoader, useThree } from "@react-three/fiber"
 import { useRef } from "react"
-import { DoubleSide, RepeatWrapping, TextureLoader } from "three"
-import presets from "../utils/presets"
+import { TextureLoader } from "three"
 import planetData from "../utils/planet-data"
-import getPositions from "../utils/planet-position"
 import getRotations from "../utils/planet-rotation"
 import { Text, Billboard } from "@react-three/drei"
+import { getPositions } from "../utils/planet-position"
 
 export default function Planet({ name, data }) {
   const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
 
-  const ringTexture = planetData[name].ring && useLoader(TextureLoader, `/textures/${name.toLowerCase()}ringcolor.jpg`)
+  const ringTexture = planetData[name].ring && useLoader(TextureLoader, `/textures/${name.toLowerCase()}ring.png`)
 
   const groupRef = useRef(null)
   const billboardRef = useRef(null)
 
   const camera = useThree((state) => state.camera)
-  const sunSize = planetData.sun.size;
+  const sunSize = planetData.sun.radius;
 
   function printPosition() {
     if (!groupRef.current) return
@@ -38,38 +37,43 @@ export default function Planet({ name, data }) {
 
     groupRef.current.rotation.y = rotation
     groupRef.current.position.set(
-      position.x * 0.0005,
-      position.z * 0.0005,
-      position.y * 0.0005
+      position.x * 0.0001,
+      position.z * 0.0001,
+      position.y * 0.0001
     )
 
+    // billboardRef.current.position.set(
+    //   position.x * 0.0001,
+    //   position.z * 0.0001,
+    //   position.y * 0.0001
+    // )
+
     // Billboard text scale
-    const dist = billboardRef.current.position.distanceTo(camera.position)
-    billboardRef.current.scale.setScalar(dist * 0.002)
+    const dist = groupRef.current.position.distanceTo(camera.position)
+    billboardRef.current.scale.setScalar(dist*0.001)
   })
 
   return (
     <group onClick={printPosition} ref={groupRef}>
-      <mesh scale={[data.size * 0.01, data.size * 0.01, data.size * 0.01]}>
-        <sphereGeometry args={[1, 16, 16]} />
+      <mesh>
+        <sphereGeometry args={[data.radius*0.0001, 16, 16]} />
         <meshToonMaterial map={planetTexture} />
       </mesh>
 
       { data.ring &&
-          <RingSectorUVs
-  innerRadius={data.ring.inner}
-  outerRadius={data.ring.outer}
-  segments={12}
-  materialProps={{
-    map: ringTexture,        // if you want a texture
-    metalness: 0,
-    roughness: 0.5,
-  }}
-  />
+        <RingSectorUVs
+          innerRadius={ data.ring.inner * 0.0001 }
+          outerRadius={ data.ring.outer * 0.0001 }
+          segments={40}
+          radialDivs={4}
+          materialProps={{
+            map: ringTexture,
+          }}
+        />
       }
 
-      <Billboard ref={billboardRef} static={false}>
-        <Text color="white" fontSize={10}>-</Text>
+      <Billboard ref={billboardRef}>
+        <Text color="white" fontSize={8}>{name}</Text>
       </Billboard>
     </group>
   )

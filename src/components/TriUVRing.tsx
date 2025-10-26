@@ -66,7 +66,7 @@ export default function RingSectorUVs({
 
   return (
     <mesh geometry={geometry} position={position} {...props}>
-      <meshStandardMaterial side={THREE.DoubleSide} {...materialProps} />
+      <meshStandardMaterial side={THREE.DoubleSide} {...materialProps} transparent={true} />
     </mesh>
   );
 }
