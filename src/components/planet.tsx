@@ -2,10 +2,9 @@ import RingSectorUVs from "./TriUVRing"
 import { useFrame, useLoader, useThree } from "@react-three/fiber"
 import { useRef } from "react"
 import { TextureLoader } from "three"
-import planetData from "../utils/planet-data"
-import getRotations from "../utils/planet-rotation"
 import { Text, Billboard } from "@react-three/drei"
-import { getPositions } from "../utils/planet-position"
+import planetData from "../utils/planetData"
+import { getPositions, getRotations } from "../utils/planetUtils"
 
 export default function Planet({ name, data }) {
   const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
@@ -16,7 +15,6 @@ export default function Planet({ name, data }) {
   const billboardRef = useRef(null)
 
   const camera = useThree((state) => state.camera)
-  const sunSize = planetData.sun.radius;
 
   function printPosition() {
     if (!groupRef.current) return
@@ -26,14 +24,8 @@ export default function Planet({ name, data }) {
   useFrame(() => {
     if (!groupRef.current || !billboardRef.current) return
 
-    const rotation = getRotations(name)
-    const position = getPositions(name)
-
-    if (position.x > 0) position.x += sunSize
-    else if (position.x < 0) position.x -= sunSize
-
-    if (position.y > 0) position.y += sunSize
-    else if (position.y < 0) position.y -= sunSize
+    const rotation = getRotations(data.rotation.period)
+    const position = getPositions(data.orbitalElements)
 
     groupRef.current.rotation.y = rotation
     groupRef.current.position.set(
@@ -41,12 +33,6 @@ export default function Planet({ name, data }) {
       position.z * 0.0001,
       position.y * 0.0001
     )
-
-    // billboardRef.current.position.set(
-    //   position.x * 0.0001,
-    //   position.z * 0.0001,
-    //   position.y * 0.0001
-    // )
 
     // Billboard text scale
     const dist = groupRef.current.position.distanceTo(camera.position)
