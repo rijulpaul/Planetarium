@@ -6,7 +6,7 @@ function kepler(M, e) {
   let E = M;
 
   // Iterative calculation of E
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 10; i++) {
     E = E - (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
   }
   return E;
@@ -45,7 +45,7 @@ export function getPositions(elements, date = new Date()) {
   const z = sinω * sini * xOrb + cosω * sini * yOrb;
 
   // convert from AU to km
-  return { x: x * 149600000, y: y * 149600000, z: z * 149600000 };
+  return { x: x * 149600000, y: y * 149600000, z: -z * 149600000 };
 }
 
 // Compute rotation angle in degrees at current time

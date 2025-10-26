@@ -5,6 +5,7 @@ import { TextureLoader } from "three"
 import { Text, Billboard } from "@react-three/drei"
 import planetData from "../utils/planetData"
 import { getPositions, getRotations } from "../utils/planetUtils"
+import Orbit from "./OrbitLine"
 
 export default function Planet({ name, data }) {
   const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
@@ -40,9 +41,10 @@ export default function Planet({ name, data }) {
   })
 
   return (
+    <>
     <group onClick={printPosition} ref={groupRef}>
       <mesh>
-        <sphereGeometry args={[data.radius*0.0001, 16, 16]} />
+        <sphereGeometry args={[data.radius*0.001, 16, 16]} />
         <meshToonMaterial map={planetTexture} />
       </mesh>
 
@@ -62,5 +64,8 @@ export default function Planet({ name, data }) {
         <Text color="white" fontSize={8}>{name}</Text>
       </Billboard>
     </group>
+
+    <Orbit key={name} elements={data.orbitalElements} />
+    </>
   )
 }

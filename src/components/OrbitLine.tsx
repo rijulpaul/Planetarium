@@ -1,26 +1,61 @@
-import { useMemo } from 'react';
-import { sampleOrbit } from '../utils/planet-position';
+import * as THREE from 'three'
+import { extend, useThree } from '@react-three/fiber'
+import { Line2} from 'three-stdlib'
+import { LineMaterial } from 'three-stdlib'
+import { LineGeometry } from 'three-stdlib'
+import { useMemo } from 'react'
 
-export default function OrbitLine({ elements, date = new Date(), color = 'white', segments = 720, scale = 1 }) {
-  // elements: same shape as your positionData entry
-  const positions = useMemo(() => {
-    const pts = sampleOrbit(elements, date, segments);
-    const arr = new Float32Array(pts.length * 3);
-    for (let i = 0; i < pts.length; i++) {
-      arr[3 * i + 0] = pts[i].x * scale;
-      arr[3 * i + 1] = pts[i].y * scale;
-      arr[3 * i + 2] = pts[i].z * scale;
+extend({ Line2, LineMaterial, LineGeometry })
+
+export default function Orbit({ elements, color = 'gray' }) {
+  const { size } = useThree()
+
+  if (!elements) return;
+  const {a, e, i, Ω, ω} = elements;
+
+  // compute orbit geometry
+  const line = useMemo(() => {
+    const points = []
+    const segments = 320
+    const radI = THREE.MathUtils.degToRad(i)
+    const radΩ = THREE.MathUtils.degToRad(Ω)
+    const radω = THREE.MathUtils.degToRad(ω)
+
+    for (let θ = 0; θ <= 2 * Math.PI; θ += (2 * Math.PI) / segments) {
+      const r = (a * (1 - e * e)) / (1 + e * Math.cos(θ))
+      const x = r * Math.cos(θ)
+      const y = r * Math.sin(θ)
+      points.push(new THREE.Vector3(x*14960, y*14960, 0))
     }
-    return arr;
-  }, [elements, date, segments, scale]);
+
+    points.push(points[0].clone())
+
+    const rotMatrix = new THREE.Matrix4()
+      .makeRotationZ(radΩ)
+      .multiply(new THREE.Matrix4().makeRotationX(radI))
+      .multiply(new THREE.Matrix4().makeRotationZ(radω))
+
+    points.forEach(p => p.applyMatrix4(rotMatrix))
+
+    console.log(points)
+
+    const geometry = new LineGeometry()
+    geometry.setPositions(points.flatMap(p => [p.x, p.y, p.z]))
+    return geometry
+  }, [a, e, i, Ω, ω])
+
+  const material = useMemo(() => {
+    const m = new LineMaterial({
+      color,
+      linewidth: 1, // in pixels
+      worldUnits: false, // keeps constant screen-space width
+    })
+    m.resolution.set(size.width, size.height)
+    return m
+  }, [size, color])
 
   return (
-    <line>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={positions.length / 3} array={positions} itemSize={3} />
-      </bufferGeometry>
-      <lineBasicMaterial color={color} linewidth={1} />
-    </line>
-  );
-}
-
+    <group rotation={[Math.PI / 2, 0, 0]} scale={[1,1,1]}>
+      <line2 geometry={line} material={material} />
+    </group>
+  )}
