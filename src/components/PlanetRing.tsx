@@ -1,8 +1,7 @@
-// RingSectorUVs.jsx
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import * as THREE from "three";
 
-export default function RingSectorUVs({
+export default function PlanetRing({
   innerRadius = 0.8,
   outerRadius = 1.2,
   segments = 4,

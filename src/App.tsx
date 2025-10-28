@@ -5,13 +5,13 @@ import Footer from './layouts/footer/footer';
 import Body from './layouts/body/body';
 
 function App() {
-  return (
-    <>
-      <Header/>
-      <Body/>
-      <Footer/>
-    </>
-  )
+    return (
+        <>
+            <Header/>
+            <Body/>
+            <Footer/>
+        </>
+    )
 }
 
 export default App
