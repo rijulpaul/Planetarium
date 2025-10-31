@@ -86,10 +86,10 @@ export default function TimeSlider() {
     return(
       <div className="slider-box">
         <Typography id="non-linear-slider" style={{display: "flex", justifyContent: "space-between", alignItems: "end"}} fontFamily={"Gruppo"}  gutterBottom>
-          <div>
+          <span>
             <span style={{fontSize: "48px"}}>{label.slice(0,label.search(' '))}</span>
             <span style={{fontSize: "24px"}}>{" " + label.slice(label.search(' '))}</span>
-          </div>
+          </span>
           <button className={"live-button " + (live && "isLive")} onClick={toggleLive}>
             {live ? "LIVE" : "Custom"}
           </button>
@@ -104,7 +104,7 @@ export default function TimeSlider() {
           max={marks.length}
           onChange={handleChange}
           track={false}
-          color="main"
+          color=""
         />
       </div>
     )

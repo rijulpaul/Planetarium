@@ -1,6 +1,6 @@
-import { useRef, useState } from "react"
+import { useRef, useState, forwardRef } from "react"
 
-import { TextureLoader, Vector3 } from "three"
+import { TextureLoader, Vector3, Mesh, Object3D } from "three"
 import { useFrame, useLoader, useThree } from "@react-three/fiber"
 import { Text, Billboard } from "@react-three/drei"
 
@@ -10,72 +10,83 @@ import OrbitLine from "./OrbitLine"
 import PlanetRing from "./PlanetRing"
 
 import presets from "../utils/planetPresets"
+import type { Planet as BasePlanet } from "../utils/planetData"
+import type { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { getPositions, getRotations } from "../utils/planetUtils"
 import { degToRad } from "three/src/math/MathUtils.js"
 import { useTime } from "../store/useTime"
 
-export default function Planet({ name, data: planet, controller }) {
+type PlanetConfig = BasePlanet & { rotation: { period: number; tilt: number } };
+
+interface PlanetProps {
+  name: string;
+  data: PlanetConfig;
+  controller?: React.RefObject<OrbitControlsImpl | null>;
+}
+
+export default function Planet({ name, data: planet, controller }: PlanetProps) {
 
   const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
   const ringTexture = planet.ring && useLoader(TextureLoader, `/textures/${name.toLowerCase()}ring.png`)
 
-  const groupRef = useRef(null)
-  const billboardRef = useRef(null)
+  const planetRef = useRef<Mesh | null>(null)
+  const billboardRef = useRef<Object3D | null>(null)
 
   const camera = useThree((scene)=>scene.camera)
 
   const time = useTime(state=>state.time)
 
   function focusCamera() {
-    if (!controller?.current || !groupRef?.current) return;
-  
-    const cam = controller.current.object;
-    const target = controller.current.target;
-    const newTarget = groupRef.current.position.clone();
-  
+    if (!controller?.current || !planetRef?.current) return;
+
+    const controls = controller.current as OrbitControlsImpl;
+    const cam = controls.object;
+    const target = controls.target;
+    const newTarget = planetRef.current.position.clone();
+
     const dir = new Vector3()
       .subVectors(cam.position, target)
       .normalize();
-  
+
     const newPos = newTarget.clone().addScaledVector(dir, planet.radius*0.0001*10);
-  
+
     gsap.to(target, {
       x: newTarget.x,
       y: newTarget.y,
       z: newTarget.z,
       duration: 1.5,
       ease: "power2.out",
-      onUpdate: () => controller.current.update(),
+      onUpdate: () => controls.update(),
     });
-  
+
     gsap.to(cam.position, {
       x: newPos.x,
       y: newPos.y,
       z: newPos.z,
       duration: 1.5,
       ease: "power2.out",
-      onUpdate: () => controller.current.update(),
+      onUpdate: () => controls.update(),
     });
 
-    console.log(planet)
+    console.log('done')
   }
 
   useFrame(() => {
-    if (!groupRef.current || !billboardRef.current) return
+    if (!planetRef.current || !billboardRef.current) return
     
     const date = new Date(time)
     const rotation = getRotations(date, planet.rotation.period * presets.rotationScale)
     const position = getPositions(date, planet.orbitalElements)
 
-    groupRef.current.rotation.y = rotation
-    groupRef.current.rotation.z = degToRad(planet.rotation.tilt)
-    groupRef.current.position.set(
+    planetRef.current.rotation.y = rotation
+    planetRef.current.rotation.z = degToRad(planet.rotation.tilt)
+    planetRef.current.position.set(
       position.x * 0.0001 * presets.distanceScale,
       position.z * 0.0001 * presets.distanceScale,
       position.y * 0.0001 * presets.distanceScale
     )
 
-    const dist = groupRef.current.position.distanceTo(camera.position)
+    const dist = planetRef.current.position.distanceTo(camera.position)
     billboardRef.current.scale.setScalar(dist*0.001)
   })
 
@@ -86,15 +97,18 @@ export default function Planet({ name, data: planet, controller }) {
   })
 
   useFrame(({ camera }) => {
-    billboardRef.current.position.copy(groupRef.current.position);
-    billboardRef.current.quaternion.copy(camera.quaternion);
+    if (billboardRef.current) {
+      if (planetRef.current) {
+        billboardRef.current.position.copy(planetRef.current.position);
+      }
+      billboardRef.current.quaternion.copy(camera.quaternion);
+    }
   });
 
   return (
-    <>
-    <group onClick={focusCamera} ref={groupRef}>
-      <mesh rotation={[0,-Math.PI/2,0]}>
-        <sphereGeometry args={[planet.radius*0.0001 * presets.sizeScale, 16, 16]} />
+    <group onClick={focusCamera}>
+      <mesh ref={planetRef} rotation={[0,-Math.PI/2,0]}>
+        <sphereGeometry args={[planet.radius*0.0001 * presets.sizeScale, 20, 20]} />
         <meshStandardMaterial map={planetTexture}/>
         {
           planet.emission &&
@@ -105,30 +119,34 @@ export default function Planet({ name, data: planet, controller }) {
               <pointLight position={[planet.radius*0.0001*4,-planet.radius*0.0001*4,-planet.radius*0.0001*4]} intensity={planet.emission} decay={0.1}/>
             </>
         }
+        { planet.ring &&
+          <PlanetRing
+            innerRadius={ planet.ring.inner * 0.0001 * presets.sizeScale }
+            outerRadius={ planet.ring.outer * 0.0001 * presets.sizeScale }
+            segments={48}
+            radialDivs={12}
+            materialProps={{
+              map: ringTexture,
+            }}
+          />
+        }
       </mesh>
 
-      { planet.ring &&
-        <PlanetRing
-          innerRadius={ planet.ring.inner * 0.0001 * presets.sizeScale }
-          outerRadius={ planet.ring.outer * 0.0001 * presets.sizeScale }
-          segments={48}
-          radialDivs={12}
-          materialProps={{
-            map: ringTexture,
-          }}
-        />
-      }
 
-
-    </group>
     { presets.showPlanetLabel && <PlanetLabel name={name} color={planet.color} ref={billboardRef}/>}
 
-    { presets.showOrbitPath && <OrbitLine key={name} color={planet.color || "gray"} elements={planet.orbitalElements} segments={planet.orbitalElements?.a*1000 || 1000} /> }
-    </>
+    { (() => {
+      const orbitSegments = planet.orbitalElements ? planet.orbitalElements.a * 1000 : 1000;
+      return presets.showOrbitPath && (
+        <OrbitLine key={name} color={planet.color || "gray"} elements={planet.orbitalElements} segments={orbitSegments} />
+      );
+    })() }
+    </group>
   )
 }
 
-function PlanetLabel({name, color="white", ref}) {
+const PlanetLabel = forwardRef<Object3D, { name: string; color?: string }>(
+  ({ name, color = "white" }, ref) => {
     const [lineSize, setLineSize] = useState<number>(20)
     const [hovered, setHovered] = useState(false);
 
@@ -147,9 +165,10 @@ function PlanetLabel({name, color="white", ref}) {
     }
 
     return (
-        <Billboard ref={ref} onPointerOver={incLineSize} onPointerLeave={decLineSize}>
+        <Billboard ref={ref as any} onPointerOver={incLineSize} onPointerLeave={decLineSize}>
           <Text color={color || "white"} fontSize={lineSize}>𖧋</Text>
           <Text color={color || "white"} fontSize={16} position={[0,-20,0]}>{name}</Text>
         </Billboard>
         )
 }
+);

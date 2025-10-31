@@ -9,13 +9,14 @@ import './space.css'
 
 import Planet from "../../components/planet";
 import presets from "../../utils/planetPresets";
+import planetData from "../../utils/planetData";
 
 function Loader() {
   const { progress } = useProgress();
   return <Html center style={{width: "100px"}}><span style={{fontSize: "40px", fontWeight: "800"}}>{progress.toFixed(0)}</span> % loaded</Html>;
 }
 
-export default function Space({planets}) {
+export default function Space() {
     const controlRef = useRef(null)
 
     return (
@@ -25,7 +26,9 @@ export default function Space({planets}) {
                 <AnimatedCamera controlRef={controlRef}/>
                 <Environment background files={presets.background}/>
                 <ambientLight intensity={0.2}/>
-                { Object.entries(planets).map(([name,data])=><Planet key={name} name={name} data={data} controller={controlRef} />) }
+                { Object.entries(planetData).map(([name,data])=>
+                  <Planet key={name} name={name} data={data} controller={controlRef} />
+                ) }
                 <OrbitControls ref={controlRef} zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} />
                 <Stats/>
                 </Suspense>
@@ -68,7 +71,7 @@ function AnimatedCamera({ controlRef }) {
       makeDefault
       near={0.1}
       far={999999999}
-      fov={60}
+      fov={55}
     />
   );
 }
