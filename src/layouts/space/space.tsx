@@ -2,6 +2,8 @@ import { Suspense, useEffect, useRef } from "react";
 
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, PerspectiveCamera, Stats, Html, useProgress } from '@react-three/drei';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import type { PerspectiveCamera as PerspectiveCameraImpl } from 'three';
 
 import gsap from "gsap";
 
@@ -9,7 +11,7 @@ import './space.css'
 
 import Planet from "../../components/planet";
 import presets from "../../utils/planetPresets";
-import planetData from "../../utils/planetData";
+import usePlanetData from "../../store/usePlanetData";
 
 function Loader() {
   const { progress } = useProgress();
@@ -17,7 +19,8 @@ function Loader() {
 }
 
 export default function Space() {
-    const controlRef = useRef(null)
+    const controlRef = useRef<OrbitControlsImpl | null>(null)
+    const planets = usePlanetData((s)=>s.planets)
 
     return (
         <div className="space">
@@ -26,7 +29,7 @@ export default function Space() {
                 <AnimatedCamera controlRef={controlRef}/>
                 <Environment background files={presets.background}/>
                 <ambientLight intensity={0.2}/>
-                { Object.entries(planetData).map(([name,data])=>
+                { Object.entries(planets).map(([name,data])=>
                   <Planet key={name} name={name} data={data} controller={controlRef} />
                 ) }
                 <OrbitControls ref={controlRef} zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} />
@@ -37,11 +40,12 @@ export default function Space() {
     )
 }
 
-function AnimatedCamera({ controlRef }) {
-  const camRef = useRef();
+function AnimatedCamera({ controlRef }: { controlRef: React.RefObject<OrbitControlsImpl | null> }) {
+  const camRef = useRef<PerspectiveCameraImpl | null>(null);
 
   useEffect(() => {
     if (!camRef.current) return;
+    if (!controlRef.current) return;
 
     camRef.current.position.set(-500000, 500000, 500000);
 
@@ -67,7 +71,7 @@ function AnimatedCamera({ controlRef }) {
 
   return (
     <PerspectiveCamera
-      ref={camRef}
+      ref={camRef as any}
       makeDefault
       near={0.1}
       far={999999999}

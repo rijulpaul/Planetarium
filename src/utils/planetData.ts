@@ -105,6 +105,7 @@ export interface OrbitalElements {
 
 export interface Planet {
     radius: number,
+    rotation: { period: number, tilt: number },
     emission: number | null,
     ring: Ring | null,
     orbitalElements: OrbitalElements | null,
