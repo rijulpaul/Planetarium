@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useRef } from "react";
 
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, PerspectiveCamera, Stats, Html, useProgress } from '@react-three/drei';
 
 import gsap from "gsap";
@@ -8,6 +8,7 @@ import gsap from "gsap";
 import './space.css'
 
 import Planet from "../../components/planet";
+import presets from "../../utils/planetPresets";
 
 function Loader() {
   const { progress } = useProgress();
@@ -22,11 +23,10 @@ export default function Space({planets}) {
             <Canvas>
                 <Suspense fallback={<Loader/>}>
                 <AnimatedCamera controlRef={controlRef}/>
-                <Environment background files="/space_spheremap_8k.jpg"/>
-                <pointLight intensity={2.5} decay={0.1}/>
-                <ambientLight intensity={0.1}/>
-                { Object.entries(planets).map(([name,data])=><Planet name={name} data={data} controller={controlRef} />) }
-                <OrbitControls ref={controlRef} zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} maxDistance={1000000}/>
+                <Environment background files={presets.background}/>
+                <ambientLight intensity={0.2}/>
+                { Object.entries(planets).map(([name,data])=><Planet key={name} name={name} data={data} controller={controlRef} />) }
+                <OrbitControls ref={controlRef} zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} />
                 <Stats/>
                 </Suspense>
             </Canvas>
@@ -40,10 +40,8 @@ function AnimatedCamera({ controlRef }) {
   useEffect(() => {
     if (!camRef.current) return;
 
-    // set initial camera pos
     camRef.current.position.set(-500000, 500000, 500000);
 
-    // animate to target position
     gsap.to(camRef.current.position, {
       x: 52000,
       y: 17000,
@@ -55,7 +53,6 @@ function AnimatedCamera({ controlRef }) {
       },
     });
 
-    // optionally animate the orbit target
     gsap.to(controlRef.current.target, {
       x: 0,
       y: 0,

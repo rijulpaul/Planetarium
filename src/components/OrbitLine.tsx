@@ -37,7 +37,7 @@ export default function OrbitLine({ elements, linewidth = 1, color = 'gray', seg
     points.forEach(p => p.applyMatrix4(rotMatrix))
 
     const geometry = new LineGeometry()
-    geometry.setPositions(points.flatMap(p => [p.x, p.y, -p.z]))
+    geometry.setPositions(points.flatMap(p => [p.x, p.y, p.z]))
     return geometry
   }, [a, e, i, Ω, ω])
 
@@ -52,7 +52,7 @@ export default function OrbitLine({ elements, linewidth = 1, color = 'gray', seg
   }, [size, color])
 
   return (
-    <group rotation={[Math.PI / 2, 0, 0]} scale={[1,1,1]}>
+    <group rotation={[-Math.PI / 2, 0, 0]} scale={[1,1,1]}>
       <line2 linewidth={linewidth} geometry={line} material={material} />
     </group>
   )}

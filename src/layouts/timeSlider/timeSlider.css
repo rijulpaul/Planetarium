@@ -1,0 +1,24 @@
+.slider-box {
+  position: absolute;
+  bottom: 0px;
+  left: 1%;
+  width: 20vw;
+}
+
+.live-button {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: none;
+  color: gray;
+  box-shadow: 0 0 2px white;
+  height: 100%;
+  margin: 0.5rem 0;
+  padding: 5px 8px;
+}
+
+.isLive {
+  color: limegreen;
+  box-shadow: 0 0 2px limegreen;
+  font-weight: bold;
+}

@@ -13,7 +13,7 @@ function kepler(M, e) {
 }
 
 // Compute all planet positions
-export function getPositions(elements, date = new Date()) {
+export function getPositions(date = new Date(), elements) {
   if (!elements) return { x:0, y:0, z:0 }
 
   const { a, e, i, Ω, ω, M0 } = elements;
@@ -45,25 +45,24 @@ export function getPositions(elements, date = new Date()) {
   const z = sinω * sini * xOrb + cosω * sini * yOrb;
 
   // convert from AU to km
-  return { x: x * 149600000, y: y * 149600000, z: z * 149600000 };
+  return { x: x * 149600000, y: -y * 149600000, z: z * 149600000 };
 }
 
-// Compute rotation angle in degrees at current time
-export function getRotations(period, date = new Date()) {
+export function getRotations(date = new Date(), period) {
   if (period == 0) return 0;
 
   const J2000 = new Date("2000-01-01T12:00:00Z");
-  const daysSinceJ2000 = (date - J2000) / (1000 * 60 * 60 * 24);
+  const daysSinceJ2000 = (date.getTime() - J2000.getTime()) / 86400000;
 
-  const rotationPeriodDays = period / 24; // convert hours to days
-  const rotation = (360 * (daysSinceJ2000 / rotationPeriodDays)) % 360;
+  const rotationPeriodDays = period / 24;
+  const rotations = daysSinceJ2000 / rotationPeriodDays;
 
-  return rotation;
+  const angle = (rotations * 360) % 360;
+
+  return degToRad(angle)
 }
 
 export function sampleOrbit(elements, date = new Date(), numPoints = 360) {
-  // We'll compute M0 at J2000 and then sample mean anomalies across 0..2π.
-  // Use M0 as phase offset so the orbit is positioned correctly relative to epoch.
   const { a, e, i, Ω, ω, M0 } = elements;
   const n = 360 / (a ** 1.5 * 365.25); // deg/day
   const J2000 = new Date("2000-01-01T12:00:00Z");
@@ -71,11 +70,9 @@ export function sampleOrbit(elements, date = new Date(), numPoints = 360) {
   const epochMdeg = (M0 + n * d) % 360;
   const epochM = degToRad(epochMdeg);
 
-  // We'll sample mean anomaly values 0..2π and offset by epochM so orientation at 'date' matches.
   const points = [];
   for (let k = 0; k < numPoints; k++) {
     const M = (2 * Math.PI * k) / numPoints + epochM;
-    // normalize M to [-pi,pi] maybe but Kepler solver handles it
     const E = kepler(M, e);
     const v =
       2 *

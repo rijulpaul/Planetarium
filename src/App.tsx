@@ -2,13 +2,13 @@ import './App.css'
 
 import Header from './layouts/header/header';
 import Footer from './layouts/footer/footer';
-import Body from './layouts/body/body';
+import Main from './layouts/main/main';
 
 function App() {
     return (
         <>
             <Header/>
-            <Body/>
+            <Main/>
             <Footer/>
         </>
     )

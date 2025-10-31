@@ -11,6 +11,8 @@ import PlanetRing from "./PlanetRing"
 
 import presets from "../utils/planetPresets"
 import { getPositions, getRotations } from "../utils/planetUtils"
+import { degToRad } from "three/src/math/MathUtils.js"
+import { useTime } from "../store/useTime"
 
 export default function Planet({ name, data: planet, controller }) {
 
@@ -22,6 +24,8 @@ export default function Planet({ name, data: planet, controller }) {
 
   const camera = useThree((scene)=>scene.camera)
 
+  const time = useTime(state=>state.time)
+
   function focusCamera() {
     if (!controller?.current || !groupRef?.current) return;
   
@@ -29,15 +33,12 @@ export default function Planet({ name, data: planet, controller }) {
     const target = controller.current.target;
     const newTarget = groupRef.current.position.clone();
   
-    // Direction vector from camera to target
     const dir = new Vector3()
       .subVectors(cam.position, target)
       .normalize();
   
-    // Calculate new camera position at desired distance from new target
     const newPos = newTarget.clone().addScaledVector(dir, planet.radius*0.0001*10);
   
-    // Animate both target and camera position
     gsap.to(target, {
       x: newTarget.x,
       y: newTarget.y,
@@ -55,32 +56,55 @@ export default function Planet({ name, data: planet, controller }) {
       ease: "power2.out",
       onUpdate: () => controller.current.update(),
     });
+
+    console.log(planet)
   }
 
   useFrame(() => {
     if (!groupRef.current || !billboardRef.current) return
-
-    const rotation = getRotations(planet.rotation.period * presets.rotationScale)
-    const position = getPositions(planet.orbitalElements)
+    
+    const date = new Date(time)
+    const rotation = getRotations(date, planet.rotation.period * presets.rotationScale)
+    const position = getPositions(date, planet.orbitalElements)
 
     groupRef.current.rotation.y = rotation
+    groupRef.current.rotation.z = degToRad(planet.rotation.tilt)
     groupRef.current.position.set(
       position.x * 0.0001 * presets.distanceScale,
       position.z * 0.0001 * presets.distanceScale,
       position.y * 0.0001 * presets.distanceScale
     )
 
-    // Billboard text scale
     const dist = groupRef.current.position.distanceTo(camera.position)
     billboardRef.current.scale.setScalar(dist*0.001)
   })
 
+  const updateTime = useTime(state=>state.updateTime)
+
+  useFrame((_,delta) => {
+    updateTime(delta)
+  })
+
+  useFrame(({ camera }) => {
+    billboardRef.current.position.copy(groupRef.current.position);
+    billboardRef.current.quaternion.copy(camera.quaternion);
+  });
+
   return (
     <>
     <group onClick={focusCamera} ref={groupRef}>
-      <mesh>
+      <mesh rotation={[0,-Math.PI/2,0]}>
         <sphereGeometry args={[planet.radius*0.0001 * presets.sizeScale, 16, 16]} />
-        <meshStandardMaterial map={planetTexture} />
+        <meshStandardMaterial map={planetTexture}/>
+        {
+          planet.emission &&
+            <>
+              <pointLight position={[planet.radius*0.0001*4,planet.radius*0.0001*4,planet.radius*0.0001*4]} intensity={planet.emission} decay={0.1}/>
+              <pointLight position={[-planet.radius*0.0001*4,-planet.radius*0.0001*4,planet.radius*0.0001*4]} intensity={planet.emission} decay={0.1}/>
+              <pointLight position={[-planet.radius*0.0001*4,planet.radius*0.0001*4,-planet.radius*0.0001*4]} intensity={planet.emission} decay={0.1}/>
+              <pointLight position={[planet.radius*0.0001*4,-planet.radius*0.0001*4,-planet.radius*0.0001*4]} intensity={planet.emission} decay={0.1}/>
+            </>
+        }
       </mesh>
 
       { planet.ring &&
@@ -95,11 +119,11 @@ export default function Planet({ name, data: planet, controller }) {
         />
       }
 
-      { presets.showPlanetLabel && <PlanetLabel name={name} color={planet.color} ref={billboardRef}/>}
 
     </group>
+    { presets.showPlanetLabel && <PlanetLabel name={name} color={planet.color} ref={billboardRef}/>}
 
-    { presets.showOrbitPath && <OrbitLine key={name} color={planet.color || "gray"} elements={planet.orbitalElements} segments={planet.distance/100000} /> }
+    { presets.showOrbitPath && <OrbitLine key={name} color={planet.color || "gray"} elements={planet.orbitalElements} segments={planet.orbitalElements?.a*1000 || 1000} /> }
     </>
   )
 }

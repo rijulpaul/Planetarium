@@ -1,22 +1,27 @@
 import './header.css'
-import { useState, useEffect } from 'react'
+import { useTime } from '../../store/useTime'
 
 export default function Header() {
-    const [currentTime, setCurrentTime] = useState(new Date())
+    const getTime = useTime(state=>state.time)
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentTime(new Date())
-        }, 1000) // Update every second
+    const [date, time] = new Date(getTime)
+        .toLocaleString()
+        .replaceAll('/', '-')
+        .replace(',', ' |')
+        .split("|")
+        .map(s => s.trim())
+    
+    const parts = date.split("-");
+    parts[1] = parts[1].padStart(2, "0");
+    const formattedDate = parts.join("-");
 
-        return () => clearInterval(timer)
-    }, [])
 
     return <header className='header'>
         <div className="header-content">
             <span>Planetarium</span>
             <div className="time-indicator">
-                <span>{currentTime.toLocaleString().replaceAll('/','-').replace(',',' |')}</span>
+                <span>{formattedDate}</span>
+                <span>{time}</span>
             </div>
         </div>
     </header>
