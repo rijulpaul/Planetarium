@@ -5,9 +5,11 @@ import { useMemo } from 'react'
 
 import presets from '../utils/planetPresets'
 
+import type { OrbitalElements } from '../utils/planetData'
+
 extend({ Line2, LineMaterial, LineGeometry })
 
-export default function OrbitLine({ elements, linewidth = 1, color = 'gray', segments = 1000 }) {
+export default function OrbitLine({ elements , linewidth = 1, color = 'gray', segments = 1000 }:{elements: OrbitalElements, linewidth: number, color: string, segments: number }) {
   const { size } = useThree()
 
   const { a, e, i, Ω, ω } = elements || {}

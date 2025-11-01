@@ -79,7 +79,7 @@ export default function TimeSlider() {
     useEffect(()=>{
         setLabel(marks[value].label)
         setMult(100*marks[value].multiplier) // s to ms
-        if (live) setLive()
+        if (live) setLive(!live)
     },[value,live,marks,setLive,setMult])
 
 
@@ -91,7 +91,7 @@ export default function TimeSlider() {
 
     function toggleLive() {
         const currValue = live ? value : 28
-        setLive()
+        setLive(!live)
         changeValue(currValue)
         // setLabel(marks[currValue].label)
     }

@@ -1,7 +1,8 @@
 import { Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
+import type { OrbitalElements } from "./planetData";
 
-function kepler(M, e) {
+function kepler(M:number, e:number) {
   M = degToRad(M);
   let E = M;
 
@@ -13,13 +14,13 @@ function kepler(M, e) {
 }
 
 // Compute all planet positions
-export function getPositions(date = new Date(), elements) {
+export function getPositions(date:Date = new Date(), elements:OrbitalElements) {
   if (!elements) return { x:0, y:0, z:0 }
 
   const { a, e, i, Ω, ω, M0 } = elements;
 
   const J2000 = new Date("2000-01-01T12:00:00Z");
-  const daysSinceJ2000 = (date - J2000) / (1000 * 60 * 60 * 24);
+  const daysSinceJ2000 = (date.getTime() - J2000.getTime()) / (1000 * 60 * 60 * 24);
 
   const n = 360 / (a ** 1.5 * 365.25); // mean motion in deg/day (simplified)
   const M = M0 + n * daysSinceJ2000; // mean anomaly
@@ -48,7 +49,7 @@ export function getPositions(date = new Date(), elements) {
   return { x: x * 149600000, y: -y * 149600000, z: z * 149600000 };
 }
 
-export function getRotations(date = new Date(), period) {
+export function getRotations(date: Date = new Date(), period:number) {
   if (period == 0) return 0;
 
   const J2000 = new Date("2000-01-01T12:00:00Z");
@@ -62,11 +63,11 @@ export function getRotations(date = new Date(), period) {
   return degToRad(angle)
 }
 
-export function sampleOrbit(elements, date = new Date(), numPoints = 360) {
+export function sampleOrbit(elements:OrbitalElements, date:Date = new Date(), numPoints: number = 360) {
   const { a, e, i, Ω, ω, M0 } = elements;
   const n = 360 / (a ** 1.5 * 365.25); // deg/day
   const J2000 = new Date("2000-01-01T12:00:00Z");
-  const d = (date - J2000) / (1000 * 60 * 60 * 24);
+  const d = (date.getTime() - J2000.getTime()) / (1000 * 60 * 60 * 24);
   const epochMdeg = (M0 + n * d) % 360;
   const epochM = degToRad(epochMdeg);
 

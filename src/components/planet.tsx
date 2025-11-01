@@ -43,7 +43,7 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
 
   function focusCamera() {
     setTimeScale(27)
-    if (live) setLive()
+    if (live) setLive(!live)
 
     if (!controller?.current || !planetRef?.current) return;
 
