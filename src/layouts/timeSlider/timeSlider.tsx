@@ -1,8 +1,23 @@
 import { Slider, Typography } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { create } from "zustand"
 
 import './timeSlider.css'
 import { useTime } from "../../store/useTime"
+import { useSpaceUI } from "../../store/useSpaceUI"
+
+type State = {
+    sliderIndex: number, 
+}
+
+type Action = {
+    updateIndex: (index:number) => void,
+}
+
+export const useTimeSlide = create<State & Action>( set => ({
+    sliderIndex: 28,
+    updateIndex: (index) => set(() => ({sliderIndex: index}))
+}));
 
 export default function TimeSlider() {
     const marks = [
@@ -63,27 +78,39 @@ export default function TimeSlider() {
         { value: 54, label: "1 year / second", multiplier: 60*60*24*365 },
     ]
 
-    const [value,setValue] = useState<number>(28)
-    const [label,setLabel] = useState<string>(marks[28].label)
+    const value = useTimeSlide((state)=>(state.sliderIndex))
+    const changeValue = useTimeSlide((state)=>(state.updateIndex))
+
+    useEffect(()=>{
+        setLabel(marks[value].label)
+        setMult(100*marks[value].multiplier) // s to ms
+        if (live) setLive()
+    },[value])
+
+    const [label,setLabel] = useState<string>(marks[value].label)
 
     const live = useTime(state=>state.live)
     const setLive = useTime(state=>state.updateLive)
     const setMult = useTime(state => state.updateMult)
 
     function handleChange(_:Event, value:number) {
+        changeValue(value);
         setLabel(marks[value].label)
-        setValue(value)
         setMult(100*marks[value].multiplier) // s to ms
     }
 
     function toggleLive() {
-        setLive()
         const currValue = live ? value : 28
-        setValue(currValue);
-        setLabel(marks[currValue].label)
+        setLive()
+        changeValue(currValue)
+        // setLabel(marks[currValue].label)
     }
 
+    const showUI = useSpaceUI(state=>state.active)
+
     return(
+      <>
+      { showUI &&
       <div className="slider-box">
         <Typography id="non-linear-slider" style={{display: "flex", justifyContent: "space-between", alignItems: "end"}} fontFamily={"Gruppo"}  gutterBottom>
           <span>
@@ -106,6 +133,7 @@ export default function TimeSlider() {
           track={false}
           color=""
         />
-      </div>
+      </div>}
+    </>
     )
 }

@@ -15,6 +15,7 @@ import type { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { getPositions, getRotations } from "../utils/planetUtils"
 import { degToRad } from "three/src/math/MathUtils.js"
 import { useTime } from "../store/useTime"
+import { useTimeSlide } from "../layouts/timeSlider/timeSlider"
 
 type PlanetConfig = BasePlanet & { rotation: { period: number; tilt: number } };
 
@@ -35,8 +36,11 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
   const camera = useThree((scene)=>scene.camera)
 
   const time = useTime(state=>state.time)
+  const setTimeScale = useTimeSlide(state=>state.updateIndex)
 
   function focusCamera() {
+    setTimeScale(27)
+
     if (!controller?.current || !planetRef?.current) return;
 
     const controls = controller.current as OrbitControlsImpl;

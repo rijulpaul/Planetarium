@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import "./sidemenu.css"
 import icon from "../../../public/edit.svg"
 import usePlanetData from "../../store/usePlanetData";
 import type { OrbitalElements } from "../../utils/planetData";
+
+import { useSpaceUI } from "../../store/useSpaceUI";
 
 export default function Sidemenu() {
 
@@ -36,7 +38,12 @@ export default function Sidemenu() {
     })
   }
 
+  const showUI = useSpaceUI(state=>state.active);
+
   return (
+    <>
+    { 
+    showUI &&
     <div className={"sidebar "+"sidebar-"+ (openMenu ? "open" : "close")}>
         <div className="sidebar-planet-presets">
           <div className="sidebar-element">
@@ -85,8 +92,10 @@ export default function Sidemenu() {
           )}
         </div>
       <div className="sidebar-toggle-button" onClick={()=>setOpenMenu(openMenu => !openMenu)}>
-        <img className="sidemenu-icon" src={icon}/>
+        <img style={{aspectRatio: "1 1", height: "max(2.5vh,2.5vw)"}} className="sidemenu-icon" src={icon}/>
       </div>
     </div>
+  }
+  </>
   )
 }
