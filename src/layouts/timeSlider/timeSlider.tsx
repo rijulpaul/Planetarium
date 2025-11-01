@@ -7,7 +7,7 @@ import { useTime } from "../../store/useTime"
 import { useSpaceUI } from "../../store/useSpaceUI"
 
 type State = {
-    sliderIndex: number, 
+    sliderIndex: number,
 }
 
 type Action = {
@@ -117,9 +117,7 @@ export default function TimeSlider() {
             <span style={{fontSize: "48px"}}>{label.slice(0,label.search(' '))}</span>
             <span style={{fontSize: "24px"}}>{" " + label.slice(label.search(' '))}</span>
           </span>
-          <button className={"live-button " + (live && "isLive")} onClick={toggleLive}>
-            {live ? "LIVE" : "Custom"}
-          </button>
+          <button className={"live-button " + (live && "isLive")} onClick={toggleLive}>LIVE</button>
         </Typography>
         <Slider
           className="slider"

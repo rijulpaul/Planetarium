@@ -10,16 +10,19 @@
   border-radius: 6px;
   cursor: pointer;
   background: none;
-  color: gray;
+  color: #606060;
   box-shadow: 0 0 2px white;
   height: 100%;
   margin: 0.5rem 0rem;
   margin-left: 10px;
-  padding: 5px 8px;
+  padding: 4px 8px;
+  width: 8ch;
+  transition: 0.2s ease all;
 }
 
 .isLive {
   color: limegreen;
-  box-shadow: 0 0 2px limegreen;
+  box-shadow: 0 0 6px limegreen;
   font-weight: bold;
+  transition: 0.2s ease all;
 }

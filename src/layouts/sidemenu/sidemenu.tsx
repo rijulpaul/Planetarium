@@ -75,7 +75,7 @@ export default function Sidemenu() {
         <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px"}}>
           <div style={{display: "flex", alignItems: "center", gap: "4px"}}>
             <span style={{color: "white", fontSize: "16px", letterSpacing: "0"}}>{label}</span>
-            <Tooltip title={parameterDescriptions[field]} placement="right">
+            <Tooltip title={parameterDescriptions[field]} placement="right" style={{fontFamily: "Gruppo"}}>
               <IconButton size="small" style={{padding: "2px"}}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.7)" strokeWidth="2"/>
@@ -100,7 +100,6 @@ export default function Sidemenu() {
               borderRadius: "4px",
               color: "white",
               fontSize: "12px",
-              padding: "4px 8px",
             }}
           />
         </div>

@@ -37,9 +37,12 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
 
   const time = useTime(state=>state.time)
   const setTimeScale = useTimeSlide(state=>state.updateIndex)
+  const live = useTime(state=>state.live)
+  const setLive = useTime(state=>state.updateLive)
 
   function focusCamera() {
     setTimeScale(27)
+    if (live) setLive()
 
     if (!controller?.current || !planetRef?.current) return;
 
