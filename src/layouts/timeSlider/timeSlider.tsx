@@ -1,26 +1,14 @@
 import { Slider, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { create } from "zustand"
+import { useEffect, useMemo, useState } from "react"
 
 import './timeSlider.css'
 import { useTime } from "../../store/useTime"
 import { useSpaceUI } from "../../store/useSpaceUI"
+import { useTimeSlide } from "../../store/useTimeSlide"
 
-type State = {
-    sliderIndex: number,
-}
-
-type Action = {
-    updateIndex: (index:number) => void,
-}
-
-export const useTimeSlide = create<State & Action>( set => ({
-    sliderIndex: 28,
-    updateIndex: (index) => set(() => ({sliderIndex: index}))
-}));
 
 export default function TimeSlider() {
-    const marks = [
+    const marks = useMemo(() => [
         { value: 0, label: "-1 year / second", multiplier: -(60*60*24*365) },
         { value: 1, label: "-10 month(s) / second", multiplier: -(60*60*24*30*10) },
         { value: 2, label: "-8 month(s) / second", multiplier: -(60*60*24*30*8) },
@@ -76,22 +64,24 @@ export default function TimeSlider() {
         { value: 52, label: "8 month(s) / second", multiplier: 60*60*24*30*8 },
         { value: 53, label: "10 month(s) / second", multiplier: 60*60*24*30*10 },
         { value: 54, label: "1 year / second", multiplier: 60*60*24*365 },
-    ]
+    ], [])
 
     const value = useTimeSlide((state)=>(state.sliderIndex))
     const changeValue = useTimeSlide((state)=>(state.updateIndex))
-
-    useEffect(()=>{
-        setLabel(marks[value].label)
-        setMult(100*marks[value].multiplier) // s to ms
-        if (live) setLive()
-    },[value])
 
     const [label,setLabel] = useState<string>(marks[value].label)
 
     const live = useTime(state=>state.live)
     const setLive = useTime(state=>state.updateLive)
+
     const setMult = useTime(state => state.updateMult)
+
+    useEffect(()=>{
+        setLabel(marks[value].label)
+        setMult(100*marks[value].multiplier) // s to ms
+        if (live) setLive()
+    },[value,live,marks,setLive,setMult])
+
 
     function handleChange(_:Event, value:number) {
         changeValue(value);

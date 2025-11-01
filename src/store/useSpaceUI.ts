@@ -9,6 +9,6 @@ type Action = {
 }
 
 export const useSpaceUI = create<State & Action>((set) => ({
-    active: false,
+    active: true,
     setActive: () => set((state)=>({active: !state.active})) 
 }))

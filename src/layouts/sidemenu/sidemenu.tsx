@@ -44,7 +44,7 @@ export default function Sidemenu() {
       const next: OrbitalElements = { ...prev }
       const range = parameterRanges[field]
       const clamped = Math.min(range.max, Math.max(range.min, numValue))
-      next[field] = clamped as any
+      next[field] = clamped
       return next
     })
   }
@@ -59,7 +59,7 @@ export default function Sidemenu() {
     
     updateOrbitalElements(selected, (prev)=>{
       const next: OrbitalElements = { ...prev }
-      next[field] = clamped as any
+      next[field] = clamped
       return next
     })
   }

@@ -10,11 +10,11 @@ extend({ Line2, LineMaterial, LineGeometry })
 export default function OrbitLine({ elements, linewidth = 1, color = 'gray', segments = 1000 }) {
   const { size } = useThree()
 
-  if (!elements) return;
-  const {a, e, i, Ω, ω} = elements;
+  const { a, e, i, Ω, ω } = elements || {}
 
-  // compute orbit geometry
   const line = useMemo(() => {
+    if (!elements) return null
+
     const points = []
     const radI = THREE.MathUtils.degToRad(i)
     const radΩ = THREE.MathUtils.degToRad(Ω)
@@ -24,7 +24,7 @@ export default function OrbitLine({ elements, linewidth = 1, color = 'gray', seg
       const r = (a * (1 - e * e)) / (1 + e * Math.cos(θ))
       const x = r * Math.cos(θ)
       const y = r * Math.sin(θ)
-      points.push(new THREE.Vector3(x*14960*presets.distanceScale, y*14960*presets.distanceScale, 0))
+      points.push(new THREE.Vector3(x * 14960 * presets.distanceScale, y * 14960 * presets.distanceScale, 0))
     }
 
     points.push(points[0].clone())
@@ -39,20 +39,24 @@ export default function OrbitLine({ elements, linewidth = 1, color = 'gray', seg
     const geometry = new LineGeometry()
     geometry.setPositions(points.flatMap(p => [p.x, p.y, p.z]))
     return geometry
-  }, [a, e, i, Ω, ω])
+  }, [elements, a, e, i, Ω, ω, segments])
 
   const material = useMemo(() => {
     const m = new LineMaterial({
       color,
-      linewidth: linewidth, // in pixels
-      worldUnits: false, // keeps constant screen-space width
+      linewidth,
+      worldUnits: false,
     })
     m.resolution.set(size.width, size.height)
     return m
-  }, [size, color])
+  }, [size, color, linewidth])
+
+  if (!elements || !line) return null
 
   return (
     <group rotation={[-Math.PI / 2, 0, 0]} scale={[1,1,1]}>
       <line2 linewidth={linewidth} geometry={line} material={material} />
     </group>
-  )}
+  )
+}
+

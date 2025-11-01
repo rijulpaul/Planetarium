@@ -15,7 +15,7 @@ import type { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { getPositions, getRotations } from "../utils/planetUtils"
 import { degToRad } from "three/src/math/MathUtils.js"
 import { useTime } from "../store/useTime"
-import { useTimeSlide } from "../layouts/timeSlider/timeSlider"
+import { useTimeSlide } from "../store/useTimeSlide"
 
 type PlanetConfig = BasePlanet & { rotation: { period: number; tilt: number } };
 
@@ -28,7 +28,8 @@ interface PlanetProps {
 export default function Planet({ name, data: planet, controller }: PlanetProps) {
 
   const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
-  const ringTexture = planet.ring && useLoader(TextureLoader, `/textures/${name.toLowerCase()}ring.png`)
+  const ringPath = planet.ring ?  `/textures/${name.toLowerCase()}ring.png` : '/fallback.png';
+  const ringTexture = useLoader(TextureLoader,ringPath)
 
   const planetRef = useRef<Mesh | null>(null)
   const billboardRef = useRef<Object3D | null>(null)
@@ -172,7 +173,7 @@ const PlanetLabel = forwardRef<Object3D, { name: string; color?: string }>(
     }
 
     return (
-        <Billboard ref={ref as any} onPointerOver={incLineSize} onPointerLeave={decLineSize}>
+        <Billboard ref={ref} onPointerOver={incLineSize} onPointerLeave={decLineSize}>
           <Text color={color || "white"} fontSize={lineSize}>𖧋</Text>
           <Text color={color || "white"} fontSize={16} position={[0,-20,0]}>{name}</Text>
         </Billboard>

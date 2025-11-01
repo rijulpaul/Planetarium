@@ -12,15 +12,15 @@ import './space.css'
 import Planet from "../../components/planet";
 import presets from "../../utils/planetPresets";
 import usePlanetData from "../../store/usePlanetData";
-import { useSpaceUI } from "../../store/useSpaceUI";
+// import { useSpaceUI } from "../../store/useSpaceUI";
 
 function Loader() {
-  const { item, progress } = useProgress();
-  const toggleUI = useSpaceUI(state=>state.setActive)
+  const { progress } = useProgress();
+  // const toggleUI = useSpaceUI(state=>state.setActive)
 
-    useEffect(()=>{
-        if (item=="/textures/uranusring.png" && progress==100) setTimeout(toggleUI,500)
-    },[progress])
+    // useEffect(()=>{
+        // if (item=="/textures/uranusring.png" && progress==100) setTimeout(toggleUI,500)
+    // },[progress])
 
   return <Html center style={{width: "100px"}}><span style={{fontSize: "40px", fontWeight: "800"}}>{progress.toFixed(0)}</span> % loaded</Html>;
 }
@@ -78,7 +78,7 @@ function AnimatedCamera({ controlRef }: { controlRef: React.RefObject<OrbitContr
 
   return (
     <PerspectiveCamera
-      ref={camRef as any}
+      ref={camRef}
       makeDefault
       near={0.1}
       far={999999999}
