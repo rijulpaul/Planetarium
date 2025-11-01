@@ -1,15 +1,10 @@
 import * as THREE from 'three'
-import { extend, useThree } from '@react-three/fiber'
-import { Line2, LineGeometry, LineMaterial } from 'three-stdlib'
 import { useMemo } from 'react'
 import presets from '../utils/planetPresets'
 import type { OrbitalElements } from '../utils/planetData'
 
-extend({ Line2, LineMaterial, LineGeometry })
-
-export default function OrbitLine({ elements , linewidth = 1, color = new THREE.Color('gray').getHex(), segments = 1000 }:{ elements: OrbitalElements | null, linewidth?: number, color: number|string, segments?: number
+export default function OrbitLine({ elements, color = 'gray', segments = 1000 }:{ elements: OrbitalElements | null, color?: number|string, segments?: number
 }) {
-  const { size } = useThree()
 
   const line = useMemo(() => {
     if (!elements) return null
@@ -28,7 +23,6 @@ export default function OrbitLine({ elements , linewidth = 1, color = new THREE.
         0
       ))
     }
-    points.push(points[0].clone())
 
     const rot = new THREE.Matrix4()
       .makeRotationZ(radΩ)
@@ -37,27 +31,15 @@ export default function OrbitLine({ elements , linewidth = 1, color = new THREE.
 
     points.forEach(p => p.applyMatrix4(rot))
 
-    const geo = new LineGeometry()
-    geo.setPositions(points.flatMap(p => [p.x, p.y, p.z]))
+    const geo = new THREE.BufferGeometry().setFromPoints(points)
     return geo
   }, [elements, segments])
-
-  const material = useMemo(() => {
-    const m = new LineMaterial({
-      color: new THREE.Color(color).getHex(),
-      linewidth,
-      worldUnits: false
-    })
-    m.resolution.set(size.width, size.height)
-    return m
-  }, [size, color, linewidth])
 
   if (!elements || !line) return null
 
   return (
     <group rotation={[-Math.PI / 2, 0, 0]}>
-      <line2 geometry={line} material={material} />
+      <primitive object={new THREE.Line(line, new THREE.LineBasicMaterial({ color }))} />
     </group>
   )
 }
-

@@ -105,7 +105,7 @@ export default function Sidemenu() {
         </div>
         <Slider
           value={elements[field]}
-          onChange={(_, val) => handleSliderChange(field, val)}
+          onChange={(_: Event, val: number | number[]) => handleSliderChange(field, val)}
           min={range.min}
           max={range.max}
           step={range.step}
