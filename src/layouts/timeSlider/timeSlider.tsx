@@ -93,7 +93,6 @@ export default function TimeSlider() {
         const currValue = live ? value : 28
         setLive(!live)
         changeValue(currValue)
-        // setLabel(marks[currValue].label)
     }
 
     const showUI = useSpaceUI(state=>state.active)
