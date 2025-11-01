@@ -131,7 +131,26 @@ export default function TimeSlider() {
           max={marks.length}
           onChange={handleChange}
           track={false}
-          color=""
+          sx={{
+            color: "#000000",
+            '& .MuiSlider-thumb': {
+              backgroundColor: "#1a1a1a",
+              border: "1px solid rgba(255,255,255,0.3)",
+              boxShadow: "none",
+              '&:hover': {
+                boxShadow: "none",
+              },
+              '&:focus': {
+                boxShadow: "none",
+              },
+            },
+            '& .MuiSlider-track': {
+              backgroundColor: "#404040",
+            },
+            '& .MuiSlider-rail': {
+              backgroundColor: "#a0a0a0",
+            },
+          }}
         />
       </div>}
     </>

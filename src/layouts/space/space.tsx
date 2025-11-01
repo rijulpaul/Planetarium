@@ -41,6 +41,7 @@ export default function Space() {
           )}
           <OrbitControls ref={controlRef} zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} />
         </Suspense>
+        <Stats/>
       </Canvas>
     </div>
   )

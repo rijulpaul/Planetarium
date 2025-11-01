@@ -2,15 +2,16 @@
     background-color: black;
     border-radius: 12px;
     position: absolute;
-    box-shadow: 0px -1px 8px gray;
+    border: solid 2px #303030;
     top: 50%;
     transform: translate(10px, -50%);
     transition: 0.3s ease-in-out transform;
+    z-index: 1;
   }
   
   .sidebar-close {
     transition: 0.3s ease-in-out transform;
-    transform: translate(-101%,-50%);
+    transform: translate(-100%,-50%);
   }
   
   .sidebar-toggle-button {
@@ -18,10 +19,10 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    box-shadow: 0px -1px 8px gray;
-    clip-path: inset(-10px -10px -10px 0);
+    border: solid 2px #303030;
     background-color: black;
-    left: 99.5%;
+    clip-path: inset(0 0 0 6px);
+    left: 97.5%;
     aspect-ratio: 1/1;
     border-start-end-radius: 20rem;
     border-end-end-radius: 20rem;
@@ -36,4 +37,16 @@
   
   .sidemenu-icon {
       height: 2vw;
+  }
+
+  /* Remove spinner arrows from number inputs */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
+  
+  input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
   }
