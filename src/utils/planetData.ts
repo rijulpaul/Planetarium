@@ -91,7 +91,7 @@ export interface AngleXYZ {
 export interface Ring {
     inner: number,
     outer: number,
-    rotation: AngleXYZ
+    rotation?: AngleXYZ
 }
 
 export interface OrbitalElements {

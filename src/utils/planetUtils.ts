@@ -14,7 +14,7 @@ function kepler(M:number, e:number) {
 }
 
 // Compute all planet positions
-export function getPositions(date:Date = new Date(), elements:OrbitalElements) {
+export function getPositions(date:Date = new Date(), elements:OrbitalElements | null) {
   if (!elements) return { x:0, y:0, z:0 }
 
   const { a, e, i, Ω, ω, M0 } = elements;

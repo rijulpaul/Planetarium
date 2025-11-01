@@ -6,7 +6,7 @@ export default function PlanetRing({
   outerRadius = 1.2,
   segments = 4,
   radialDivs = 16,     // controls radial tessellation for smooth curvature
-  position = [0, 0, 0],
+  position = [0, 0, 0] as [number, number, number],
   materialProps = {},
   ...props
 }) {

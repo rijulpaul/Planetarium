@@ -1,6 +1,6 @@
 import { useRef, useState, forwardRef } from "react"
 
-import { TextureLoader, Vector3, Mesh, Object3D } from "three"
+import { TextureLoader, Vector3, Mesh, Group } from "three"
 import { useFrame, useLoader, useThree } from "@react-three/fiber"
 import { Text, Billboard } from "@react-three/drei"
 
@@ -32,7 +32,7 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
   const ringTexture = useLoader(TextureLoader,ringPath)
 
   const planetRef = useRef<Mesh | null>(null)
-  const billboardRef = useRef<Object3D | null>(null)
+  const billboardRef = useRef<Group | null>(null)
 
   const camera = useThree((scene)=>scene.camera)
 
@@ -153,7 +153,7 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
   )
 }
 
-const PlanetLabel = forwardRef<Object3D, { name: string; color?: string }>(
+const PlanetLabel = forwardRef<Group, { name: string; color?: string }>(
   ({ name, color = "white" }, ref) => {
     const [lineSize, setLineSize] = useState<number>(20)
     const [hovered, setHovered] = useState(false);
