@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef } from "react";
 
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Environment, PerspectiveCamera, Stats, Html, useProgress } from '@react-three/drei';
+import { OrbitControls, Environment, PerspectiveCamera, Html, useProgress } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import type { PerspectiveCamera as PerspectiveCameraImpl } from 'three';
 
