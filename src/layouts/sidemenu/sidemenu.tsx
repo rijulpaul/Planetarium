@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Slider, Tooltip, IconButton } from "@mui/material";
 
 import "./sidemenu.css"
-import icon from "../../../public/edit.svg"
+import icon from "../../assets/edit.svg"
 import usePlanetData from "../../store/usePlanetData";
 import type { OrbitalElements } from "../../utils/planetData";
 

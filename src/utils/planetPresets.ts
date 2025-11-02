@@ -1,5 +1,4 @@
 const presets = {
-    background: "/space_spheremap_8k.jpg",
     showOrbitPath: true,
     showPlanetLabel: true,
     rotationScale: 1,

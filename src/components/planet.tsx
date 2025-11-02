@@ -1,4 +1,4 @@
-import { useRef, useState, forwardRef } from "react"
+import { useRef, useState, forwardRef, useEffect } from "react"
 
 import { TextureLoader, Vector3, Mesh, Group } from "three"
 import { useFrame, useLoader, useThree } from "@react-three/fiber"
@@ -27,8 +27,8 @@ interface PlanetProps {
 
 export default function Planet({ name, data: planet, controller }: PlanetProps) {
 
-  const planetTexture = useLoader(TextureLoader, `/textures/${name.toLowerCase()}.jpg`)
-  const ringPath = planet.ring ?  `/textures/${name.toLowerCase()}ring.png` : '/fallback.png';
+  const planetTexture = useLoader(TextureLoader, `${import.meta.env.BASE_URL}/textures/${name.toLowerCase()}.jpg`)
+  const ringPath = planet.ring ?  `${import.meta.env.BASE_URL}/textures/${name.toLowerCase()}ring.png` : `${import.meta.env.BASE_URL}/fallback.png`;
   const ringTexture = useLoader(TextureLoader,ringPath)
 
   const planetRef = useRef<Mesh | null>(null)
@@ -75,9 +75,15 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
       ease: "power2.out",
       onUpdate: () => controls.update(),
     });
-
-    console.log('done')
   }
+
+  useEffect(()=>{
+
+    planetRef.current?.setRotationFromAxisAngle(
+            new Vector3(1,0,0),
+            degToRad(-planet.rotation.tilt)
+        )
+    },[planet.rotation.tilt])
 
   useFrame(() => {
     if (!planetRef.current || !billboardRef.current) return
@@ -85,9 +91,14 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
     const date = new Date(time)
     const rotation = getRotations(date, planet.rotation.period * presets.rotationScale)
     const position = getPositions(date, planet.orbitalElements)
+    planetRef.current.rotation.y = rotation+degToRad(-90)
 
-    planetRef.current.rotation.y = rotation
-    planetRef.current.rotation.z = degToRad(planet.rotation.tilt)
+    // planetRef.current.setRotationFromAxisAngle(
+    //         new Vector3(0,1,0),
+    //         rotation+degToRad(-90)
+    //     )
+
+    // planetRef.current.rotation.x = degToRad(planet.rotation.tilt)
     planetRef.current.position.set(
       position.x * 0.0001 * presets.distanceScale,
       position.z * 0.0001 * presets.distanceScale,
@@ -114,8 +125,8 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
   });
 
   return (
-    <group onClick={focusCamera}>
-      <mesh ref={planetRef} rotation={[0,-Math.PI/2,0]}>
+    <group>
+      <mesh ref={planetRef}>
         <sphereGeometry args={[planet.radius*0.0001 * presets.sizeScale, 20, 20]} />
         <meshStandardMaterial map={planetTexture}/>
         {
@@ -141,7 +152,7 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
       </mesh>
 
 
-    { presets.showPlanetLabel && <PlanetLabel name={name} color={planet.color} ref={billboardRef}/>}
+    { presets.showPlanetLabel && <PlanetLabel name={name} color={planet.color} onClick={focusCamera} ref={billboardRef}/>}
 
     { (() => {
       const orbitSegments = planet.orbitalElements ? planet.orbitalElements.a * 1000 : 1000;
@@ -153,8 +164,8 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
   )
 }
 
-const PlanetLabel = forwardRef<Group, { name: string; color?: string }>(
-  ({ name, color = "white" }, ref) => {
+const PlanetLabel = forwardRef<Group, { name: string; color?: string, onClick: ()=>void}>(
+  ({ name, color = "white", onClick }, ref ) => {
     const [lineSize, setLineSize] = useState<number>(20)
     const [hovered, setHovered] = useState(false);
 
@@ -173,10 +184,10 @@ const PlanetLabel = forwardRef<Group, { name: string; color?: string }>(
     }
 
     return (
-        <Billboard ref={ref} onPointerOver={incLineSize} onPointerLeave={decLineSize}>
-          <Text color={color || "white"} fontSize={lineSize}>𖧋</Text>
-          <Text color={color || "white"} fontSize={16} position={[0,-20,0]}>{name}</Text>
-        </Billboard>
-        )
-}
+      <Billboard onClick={onClick} ref={ref} onPointerOver={incLineSize} onPointerLeave={decLineSize}>
+        <Text color={color || "white"} fontSize={lineSize}>𖧋</Text>
+        <Text color={color || "white"} fontSize={16} position={[0,-20,0]}>{name}</Text>
+      </Billboard>
+    )
+  }
 );

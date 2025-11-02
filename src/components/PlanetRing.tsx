@@ -64,7 +64,7 @@ export default function PlanetRing({
   }, [innerRadius, outerRadius, segments, radialDivs]);
 
   return (
-    <mesh geometry={geometry} position={position} rotation={[Math.PI/2, 0, 0]} {...props}>
+    <mesh geometry={geometry} position={position} rotation={[-Math.PI/2, 0, 0]} {...props}>
       <meshStandardMaterial side={THREE.DoubleSide} {...materialProps} transparent={true} />
     </mesh>
   );

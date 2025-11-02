@@ -10,7 +10,6 @@ import gsap from "gsap";
 import './space.css'
 
 import Planet from "../../components/planet";
-import presets from "../../utils/planetPresets";
 import usePlanetData from "../../store/usePlanetData";
 import { useSpaceUI } from "../../store/useSpaceUI";
 
@@ -19,7 +18,7 @@ function Loader() {
   const toggleUI = useSpaceUI(state=>state.setActive)
 
     useEffect(()=>{
-        if (item=="/textures/uranusring.png" && progress==100) setTimeout(toggleUI,500)
+        if (item==`${import.meta.env.BASE_URL}/textures/uranusring.png` && progress==100) setTimeout(toggleUI,500)
     },[progress,item,toggleUI])
 
   return <Html center style={{width: "100px"}}><span style={{fontSize: "40px", fontWeight: "800"}}>{progress.toFixed(0)}</span> % loaded</Html>;
@@ -34,7 +33,7 @@ export default function Space() {
       <Canvas>
         <Suspense fallback={<Loader/>}>
           <AnimatedCamera controlRef={controlRef}/>
-          <Environment background files={presets.background}/>
+          <Environment background files={`${import.meta.env.BASE_URL}/space_spheremap_8k.jpg`}/>
           <ambientLight intensity={0.2}/>
           { Object.entries(planets).map(([name,data])=>
             <Planet key={name} name={name} data={data} controller={controlRef} />
