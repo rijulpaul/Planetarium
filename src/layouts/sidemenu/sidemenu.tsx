@@ -6,8 +6,6 @@ import icon from "../../assets/edit.svg"
 import usePlanetData from "../../store/usePlanetData";
 import type { OrbitalElements } from "../../utils/planetData";
 
-import { useSpaceUI } from "../../store/useSpaceUI";
-
 export default function Sidemenu() {
 
   const [openMenu, setOpenMenu] = useState<boolean>(false)
@@ -63,8 +61,6 @@ export default function Sidemenu() {
       return next
     })
   }
-
-  const showUI = useSpaceUI(state=>state.active);
 
   const renderParameter = (field: keyof OrbitalElements, label: string) => {
     if (!elements) return null;
@@ -130,9 +126,6 @@ export default function Sidemenu() {
   }
 
   return (
-    <>
-    {
-    showUI &&
     <div className={"sidebar "+"sidebar-"+ (openMenu ? "open" : "close")} style={{padding: "5px"}}>
         <div className="sidebar-planet-presets">
             <div className="sidebar-planet-div" >
@@ -166,7 +159,5 @@ export default function Sidemenu() {
         <img className="sidemenu-icon" src={icon}/>
       </div>
     </div>
-  }
-  </>
   )
 }
