@@ -1,52 +1,135 @@
 .sidebar {
-    background-color: black;
-    border-radius: 12px;
-    position: absolute;
-    border: solid 2px #303030;
-    top: 50%;
-    transform: translate(10px, -50%);
-    transition: 0.3s ease-in-out transform;
-    z-index: 1;
-  }
-  
-  .sidebar-close {
-    transition: 0.3s ease-in-out transform;
-    transform: translate(-100%,-50%);
-  }
-  
-  .sidebar-toggle-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    border: solid 2px #303030;
-    background-color: black;
-    clip-path: inset(0 0 0 6px);
-    left: 97.5%;
-    aspect-ratio: 1/1;
-    border-start-end-radius: 20rem;
-    border-end-end-radius: 20rem;
-    padding: 5px;
-    top: 5%;
-  }
-  
-  .sidebar-element {
-      display: block;
-      overflow: hidden;
-  }
-  
-  .sidemenu-icon {
-      height: 2vw;
-  }
+  background-color: black;
+  border-radius: 12px;
+  position: absolute;
+  border: solid 2px #303030;
+  top: 20%;
+  transform: translate(10px, 0%);
+  transition: 0.3s ease-in-out transform;
+  z-index: 999;
+  width: 240px;
+}
 
-  /* Remove spinner arrows from number inputs */
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
+.sidebar-close {
+  transition: 0.3s ease-in-out transform;
+  transform: translate(-100%, 0%);
+}
+
+.sidebar-toggle-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  border: solid 2px #303030;
+  border-left-color: black;
+  background-color: black;
+  left: 99%;
+  aspect-ratio: 1/1;
+  border-start-end-radius: 20rem;
+  border-end-end-radius: 20rem;
+  padding: 5px;
+  top: 5%;
+}
+
+.sidebar-element {
+  padding: 4px 12px;
+}
+
+.sidebar-element-div {
+  font-size: 18px;
+}
+
+.sidebar-element-input {
+  width: 60px;
+  padding: 2px 4px;
+  background: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+}
+
+.sidebar-element-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.sidemenu-icon {
+  height: 40px;
+}
+
+.sidebar-planet-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px 20px 8px;
+}
+
+.sidebar-planet-label {
+  font-size: 24px;
+  color: white;
+  display: block;
+}
+
+.sidebar-planet-select {
+  padding: 4px 18px;
+  background: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+}
+
+.sidebar-element-title {
+  color: white;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+/* Remove spinner arrows from number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+@media (max-width: 800px), (max-height: 800px) {
+  .sidebar {
+    width: 170px;
   }
-  
-  input[type="number"] {
-      -moz-appearance: textfield;
-      appearance: textfield;
+  .sidemenu-icon {
+    height: 30px;
   }
+  .sidebar-element-div {
+    font-size: 12px;
+  }
+  .sidebar-planet-div {
+    padding: 5px 4px 12px 4px;
+  }
+  .sidebar-planet-label {
+    font-size: 18px;
+  }
+  .sidebar-planet-select {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+  .sidebar-element {
+    padding: 2px 4px;
+  }
+  .sidebar-element-input {
+    width: 48px;
+  }
+  .sidebar-element-title {
+    font-size: 14px;
+  }
+  .sidebar-element-head {
+    margin-bottom: 2px;
+  }
+}

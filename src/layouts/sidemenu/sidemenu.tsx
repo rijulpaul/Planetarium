@@ -39,7 +39,7 @@ export default function Sidemenu() {
   function handleSliderChange(field: keyof OrbitalElements, value: number | number[]) {
     if (!elements) return;
     const numValue = typeof value === "number" ? value : value[0];
-    
+
     updateOrbitalElements(selected, (prev)=>{
       const next: OrbitalElements = { ...prev }
       const range = parameterRanges[field]
@@ -56,7 +56,7 @@ export default function Sidemenu() {
 
     const range = parameterRanges[field]
     const clamped = Math.min(range.max, Math.max(range.min, value))
-    
+
     updateOrbitalElements(selected, (prev)=>{
       const next: OrbitalElements = { ...prev }
       next[field] = clamped
@@ -69,13 +69,13 @@ export default function Sidemenu() {
   const renderParameter = (field: keyof OrbitalElements, label: string) => {
     if (!elements) return null;
     const range = parameterRanges[field];
-    
+
     return (
-      <div className="sidebar-element" style={{padding: "4px 12px"}}>
-        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px"}}>
-          <div style={{display: "flex", alignItems: "center", gap: "4px"}}>
-            <span style={{color: "white", fontSize: "16px", letterSpacing: "0"}}>{label}</span>
-            <Tooltip title={parameterDescriptions[field]} placement="right" style={{fontFamily: "Gruppo"}}>
+      <div className="sidebar-element">
+        <div className="sidebar-element-head">
+          <div style={{display: "flex", alignItems: "center", gap: "2px"}}>
+            <span className="sidebar-element-title">{label}</span>
+            <Tooltip title={parameterDescriptions[field]} placement="right">
               <IconButton size="small" style={{padding: "2px"}}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.7)" strokeWidth="2"/>
@@ -92,15 +92,7 @@ export default function Sidemenu() {
             step={range.step}
             min={range.min}
             max={range.max}
-            style={{
-              width: "60px",
-              padding: "2px 4px",
-              background: "#1a1a1a",
-              border: "none",
-              borderRadius: "4px",
-              color: "white",
-              fontSize: "12px",
-            }}
+            className="sidebar-element-input"
           />
         </div>
         <Slider
@@ -111,6 +103,9 @@ export default function Sidemenu() {
           step={range.step}
           sx={{
             color: "#000000",
+            '@media (max-width: 800px), (max-height: 800px)': {
+              p: "0 0",
+            },
             '& .MuiSlider-thumb': {
               backgroundColor: "#1a1a1a",
               border: "1px solid rgba(255,255,255,0.3)",
@@ -136,33 +131,24 @@ export default function Sidemenu() {
 
   return (
     <>
-    { 
+    {
     showUI &&
     <div className={"sidebar "+"sidebar-"+ (openMenu ? "open" : "close")} style={{padding: "5px"}}>
         <div className="sidebar-planet-presets">
-          <div className="sidebar-element">
-            <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 8px 20px 8px"}}>
-              <label style={{fontSize: "24px",color: "white", display: "block", marginRight: "60px"}}>Planet</label>
+            <div className="sidebar-planet-div" >
+              <label className="sidebar-planet-label">Planet</label>
               <select
                 value={selected}
                 onChange={(e)=>setSelected(e.target.value)}
-                style={{ 
-                  padding: "4px 18px",
-                  background: "#1a1a1a",
-                  border: "none",
-                  borderRadius: "4px",
-                  color: "white",
-                  fontSize: "14px"
-                }}
+                className="sidebar-planet-select"
               >
                 {planetKeys.map((k)=> (
                   <option key={k} value={k} style={{background: "black", color: "white"}}>{k}</option>
                 ))}
               </select>
             </div>
-          </div>
           {elements == null ? (
-            <div className="sidebar-element" style={{color: "white", padding: "8px"}}>
+            <div className="sidebar-element-div">
               Orbital elements unavailable for this body.
             </div>
           ) : (
@@ -177,7 +163,7 @@ export default function Sidemenu() {
           )}
         </div>
       <div className="sidebar-toggle-button" onClick={()=>setOpenMenu(openMenu => !openMenu)}>
-        <img style={{aspectRatio: "1 1", height: "3rem"}} className="sidemenu-icon" src={icon}/>
+        <img className="sidemenu-icon" src={icon}/>
       </div>
     </div>
   }

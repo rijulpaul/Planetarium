@@ -18,8 +18,9 @@ function Loader() {
   const toggleUI = useSpaceUI(state=>state.setActive)
 
     useEffect(()=>{
-        if (item==`${import.meta.env.BASE_URL}/textures/uranusring.png` && progress==100) setTimeout(toggleUI,500)
-    },[progress,item,toggleUI])
+        if (item==`${import.meta.env.BASE_URL}/space_spheremap_8k.jpg` && progress==100) setTimeout(toggleUI,500)
+        console.log(item,progress)
+    },[toggleUI,item,progress])
 
   return <Html center style={{width: "100px"}}><span style={{fontSize: "40px", fontWeight: "800"}}>{progress.toFixed(0)}</span> % loaded</Html>;
 }
@@ -40,7 +41,6 @@ export default function Space() {
           )}
           <OrbitControls ref={controlRef} zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} />
         </Suspense>
-        <Stats/>
       </Canvas>
     </div>
   )

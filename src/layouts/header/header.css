@@ -2,12 +2,12 @@
     background: none;
     display: flex;
     position: fixed;
-    width: 98%;
     top: 0px;
-    left: 0px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 999;
     font-size: 2.4rem;
-    padding: 1%;
+    padding: 18px 0 0 0;
     justify-content: center;
     align-items: center;
 }
@@ -16,13 +16,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 20px;
 }
 
 .time-indicator {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 20px;
     font-family: 'Lekton';
     font-size: 1rem;
     color: #666;
@@ -32,4 +32,25 @@
     width: 14ch;
     transform: translateX(-7%);
     text-align: right;
+}
+
+@media (max-width: 900px)  {
+    .header {
+        font-size: 2rem;
+        gap: 10px;
+    }
+    .time-indicator {
+        font-size: 1rem;
+        gap:5px;
+    }
+}
+
+@media (max-height: 700px) {
+    .header {
+        font-size: 1.6rem;
+        gap: 6px;
+    }
+    .time-indicator {
+        font-size: 0.8rem;
+    }
 }

@@ -1,8 +1,8 @@
 .slider-box {
   position: absolute;
-  bottom: 0px;
-  left: 1%;
-  width: 20vw;
+  bottom: 18px;
+  left: 18px;
+  width: max(20vw,200px);
 }
 
 .live-button {
@@ -12,11 +12,19 @@
   background: none;
   color: #606060;
   box-shadow: 0 0 2px white;
-  height: 100%;
+  height: 24px;
   margin: 0.5rem 0rem;
   padding: 4px 8px;
   width: 50px;
   transition: 0.2s ease all;
+}
+
+.time-slider-time {
+    font-size: 48px;
+}
+
+.time-slider-units{
+    font-size: 24px;
 }
 
 .isLive {
@@ -24,4 +32,18 @@
   box-shadow: 0 0 6px limegreen;
   font-weight: bold;
   transition: 0.2s ease all;
+}
+
+@media (max-height: 700px) {
+    .live-button {
+        height: 18px;
+        width: 32px;
+        font-size: 8px;
+    }
+    .time-slider-time {
+        font-size: 32px ;
+    }
+    .time-slider-units {
+        font-size: 16px;
+    }
 }
