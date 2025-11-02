@@ -31,7 +31,7 @@ export default function Space() {
           { Object.entries(planets).map(([name,data])=>
             <Planet key={name} name={name} data={data} controller={controlRef} />
           )}
-          <OrbitControls ref={controlRef} zoomSpeed={0.5} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} />
+          <OrbitControls ref={controlRef} zoomSpeed={1} rotateSpeed={0.3} panSpeed={1} dampingFactor={0.035} />
         </Suspense>
       </Canvas>
     </div>

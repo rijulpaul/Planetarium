@@ -100,7 +100,7 @@ input[type="number"] {
   appearance: textfield;
 }
 
-@media (max-width: 800px), (max-height: 800px) {
+@media (max-width: 700px), (max-height: 700px) {
   .sidebar {
     width: 170px;
   }

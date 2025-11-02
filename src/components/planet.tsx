@@ -91,14 +91,9 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
     const date = new Date(time)
     const rotation = getRotations(date, planet.rotation.period * presets.rotationScale)
     const position = getPositions(date, planet.orbitalElements)
+
     planetRef.current.rotation.y = rotation+degToRad(-90)
 
-    // planetRef.current.setRotationFromAxisAngle(
-    //         new Vector3(0,1,0),
-    //         rotation+degToRad(-90)
-    //     )
-
-    // planetRef.current.rotation.x = degToRad(planet.rotation.tilt)
     planetRef.current.position.set(
       position.x * 0.0001 * presets.distanceScale,
       position.z * 0.0001 * presets.distanceScale,
@@ -155,7 +150,8 @@ export default function Planet({ name, data: planet, controller }: PlanetProps) 
     { presets.showPlanetLabel && <PlanetLabel name={name} color={planet.color} onClick={focusCamera} ref={billboardRef}/>}
 
     { (() => {
-      const orbitSegments = planet.orbitalElements ? planet.orbitalElements.a * 1000 : 1000;
+      const orbitSegments = planet.orbitalElements ? Math.min(Math.max((planet.orbitalElements.a**0.5) * Math.PI * 300,720),3600) : 1;
+      // console.log(orbitSegments)
       return presets.showOrbitPath && (
         <OrbitLine key={name} color={planet.color || "gray"} elements={planet.orbitalElements} segments={orbitSegments} />
       );

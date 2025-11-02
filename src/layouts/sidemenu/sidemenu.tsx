@@ -26,8 +26,8 @@ export default function Sidemenu() {
   }
 
   const parameterRanges: Record<keyof OrbitalElements, {min: number, max: number, step: number}> = {
-    a: { min: 0, max: 100, step: 0.1 },
-    e: { min: 0, max: 1, step: 0.001 },
+    a: { min: 0.01, max: 50, step: 0.05 },
+    e: { min: 0, max: 0.99, step: 0.001 },
     i: { min: 0, max: 180, step: 0.1 },
     Ω: { min: 0, max: 360, step: 0.1 },
     ω: { min: 0, max: 360, step: 0.1 },
