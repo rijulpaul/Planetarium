@@ -1,7 +1,12 @@
 # Planetarium
-### An interactive 3D visualization of the Solar System inspired by NASA’s “Eyes on the Solar System.”
 
-**Planetarium** is a real-time, browser-based Solar System simulator built with **TypeScript**, **React**, and **Three.js**.  
+<img src="https://raw.githubusercontent.com/rijulpaul/Planetarium/refs/heads/master/public/splash.png"/>
+
+### An interactive 3D visualization of the Solar System inspired by [NASA’s “Eyes on the Solar System.”](https://eyes.nasa.gov/apps/solar-system/)
+
+
+[Planetarium](https://rijulpaul.github.io/Planetarium/) is a real-time, browser-based Solar System simulator built with **TypeScript**, **React**, and **Three.js**.  
+  
 It allows users to explore the planets in 3D with accurate orbital positions, realistic rotations, and a dynamic time control system.
 All orbital motion is computed using custom orbital element processing, ensuring mathematical precision and realism.
 
